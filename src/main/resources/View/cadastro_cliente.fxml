@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.layout.GridPane?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.TextField?>
+
+<GridPane xmlns="http://javafx.com/javafx/21"
+          xmlns:fx="http://javafx.com/fxml/1"
+          fx:controller="dev.yuri.controller.ClienteController">
+
+    <Label text="Nome:" GridPane.rowIndex="0" GridPane.columnIndex="0"/>
+    <TextField fx:id="txtNome" GridPane.rowIndex="0" GridPane.columnIndex="1"/>
+
+    <Label text="CPF/CNPJ:" GridPane.rowIndex="1" GridPane.columnIndex="0"/>
+    <TextField fx:id="txtCpfCnpj" GridPane.rowIndex="1" GridPane.columnIndex="1"/>
+
+    <Label text="Endereço:" GridPane.rowIndex="2" GridPane.columnIndex="0"/>
+    <TextField fx:id="txtEndereco" GridPane.rowIndex="2" GridPane.columnIndex="1"/>
+
+    <Label text="Telefone:" GridPane.rowIndex="3" GridPane.columnIndex="0"/>
+    <TextField fx:id="txtTelefone" GridPane.rowIndex="3" GridPane.columnIndex="1"/>
+
+    <Button text="Salvar" onAction="#salvarCliente" GridPane.rowIndex="4" GridPane.columnIndex="1"/>
+</GridPane>
