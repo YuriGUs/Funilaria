@@ -17,6 +17,13 @@ public class Veiculo {
         this.cor = cor;
     }
 
+    public Veiculo(String placa, String modelo, int ano, String cor) {
+        this.placa = placa;
+        this.modelo = modelo;
+        this.ano = ano;
+        this.cor = cor;
+    }
+
     public int getId() {
         return id;
     }

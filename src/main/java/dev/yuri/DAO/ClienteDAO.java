@@ -56,4 +56,20 @@ public class ClienteDAO {
         }
         return clientes;
     }
+
+    public void excluirCliente(int id) {
+        String sql = "DELETE FROM clientes WHERE id = ?";
+
+        try (Connection conn = DatabaseConnection.connect();
+             PreparedStatement pstmt = conn.prepareStatement(sql)) {
+
+            pstmt.setInt(1, id);
+            pstmt.executeUpdate();
+            System.out.println("Cliente excluído com sucesso!");
+
+        } catch (SQLException e) {
+            System.out.println("Erro ao excluir cliente: " + e.getMessage());
+        }
+    }
+
 }

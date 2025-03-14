@@ -35,7 +35,7 @@ public class App extends Application {
         // Adicionando ação nos botões
         StackPane content = new StackPane();
         btn1.setOnAction(e -> carregarTela(content, "/view/cadastro.fxml"));
-        btn2.setOnAction(e -> mostrarConteudo(content, "Cadastro de Veículo"));
+        btn2.setOnAction(e -> carregarTela(content, "/view/clientesView.fxml"));
         btn3.setOnAction(e -> mostrarConteudo(content, "Orçamento"));
 
         // Adicionando botões ao menu

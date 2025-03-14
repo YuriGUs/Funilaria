@@ -39,11 +39,52 @@ public class CadastroController {
         limparCampos();
     }
 
+    @FXML
+    private void editarCliente() {
+
+    }
+
+
+    @FXML
+    private void cadastrarVeiculo() {
+        String placa = txtPlaca.getText();
+        String modelo = txtModelo.getText();
+        String anoTexto = txtAno.getText();
+        String cor = txtCor.getText();
+
+        if (placa.isEmpty() || modelo.isEmpty() || anoTexto.isEmpty() || cor.isEmpty()) {
+            mostrarAlerta("Erro", "Preencha todos os campos!", Alert.AlertType.ERROR);
+            return;
+        }
+
+        int ano;
+
+        try {
+            ano = Integer.parseInt(anoTexto);
+        } catch (NumberFormatException e) {
+            mostrarAlerta("Erro", "Ano deve ser um número válido!", Alert.AlertType.ERROR);
+            return;
+        }
+
+        Veiculo veiculo = new Veiculo(placa, modelo, ano, cor);
+        veiculoDAO.inserirVeiculo(veiculo);
+
+        mostrarAlerta("Sucesso", "Cliente cadastrado com sucesso!", Alert.AlertType.INFORMATION);
+
+        limparCampos();
+    }
+
     private void limparCampos() {
         txtNome.clear();
         txtCpfCnpj.clear();
         txtEndereco.clear();
         txtTelefone.clear();
+
+        txtPlaca.clear();
+        txtModelo.clear();
+        txtAno.clear();
+        txtCor.clear();
+
     }
 
     private void mostrarAlerta(String titulo, String mensagem, Alert.AlertType tipo) {
@@ -52,16 +93,5 @@ public class CadastroController {
         alert.setHeaderText(null);
         alert.setContentText(mensagem);
         alert.showAndWait();
-    }
-
-    @FXML
-    private void cadastrarVeiculo() {
-        if (clienteAtual == null) {
-            System.out.println("Cadastre um cliente primeiro!");
-            return;
-        }
-        Veiculo veiculo = new Veiculo(0, clienteAtual.getId(), txtPlaca.getText(), txtModelo.getText(),
-                Integer.parseInt(txtAno.getText()), txtCor.getText());
-        veiculoDAO.inserirVeiculo(veiculo);
     }
 }
