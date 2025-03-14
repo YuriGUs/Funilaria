@@ -13,7 +13,7 @@ public class ClienteDAO {
         String sql = "INSERT INTO clientes (nome, cpf_cnpj, endereco, telefone) VALUES (?, ?, ?, ?)";
 
         try (Connection conn = DatabaseConnection.connect();
-             PreparedStatement pstmt = conn.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
+             PreparedStatement pstmt = conn.prepareStatement(sql)) {
 
             pstmt.setString(1, cliente.getNome());
             pstmt.setString(2, cliente.getCpfCnpj());
@@ -22,10 +22,8 @@ public class ClienteDAO {
             pstmt.executeUpdate();
 
             // Pega o ID gerado
-            ResultSet rs = pstmt.getGeneratedKeys();
-            if (rs.next()) {
-                cliente.setId(rs.getInt(1)); // Atribui o ID gerado ao objeto
-            }
+            int id = (int) conn.createStatement().executeQuery("SELECT last_insert_rowid()").getInt(1);
+            cliente.setId(id);
 
             System.out.println("Cliente cadastrado com sucesso!");
 

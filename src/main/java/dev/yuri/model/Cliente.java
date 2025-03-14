@@ -18,6 +18,14 @@ public class Cliente {
         this.telefone = telefone;
     }
 
+    public Cliente(String nome, String cpfCnpj, String endereco, String telefone) {
+        this.nome = nome;
+        this.cpfCnpj = cpfCnpj;
+        this.endereco = endereco;
+        this.telefone = telefone;
+    }
+
+
     public int getId() {
         return id;
     }

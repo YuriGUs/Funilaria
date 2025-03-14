@@ -23,7 +23,7 @@ public class App extends Application {
         menu.setStyle("-fx-background-color: #2C3E50;");
 
         // Criando os botões do menu
-        Button btn1 = new Button("Cadastro de cliente");
+        Button btn1 = new Button("Cadastro");
         Button btn2 = new Button("Cadastro de veículo");
         Button btn3 = new Button("Orçamento");
 
