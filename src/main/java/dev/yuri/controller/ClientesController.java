@@ -1,9 +1,9 @@
 package dev.yuri.controller;
 
-import dev.yuri.DAO.ClienteDAO;
-import dev.yuri.DAO.VeiculoDAO;
 import dev.yuri.model.Cliente;
 import dev.yuri.model.Veiculo;
+import dev.yuri.service.ClienteService;
+import dev.yuri.service.VeiculoService;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
@@ -12,34 +12,22 @@ import javafx.scene.layout.HBox;
 
 public class ClientesController {
 
-    @FXML
-    private TableView<Cliente> tabelaClientes;
-    @FXML
-    private TableColumn<Cliente, Integer> colId;
-    @FXML
-    private TableColumn<Cliente, String> colNome;
-    @FXML
-    private TableColumn<Cliente, String> colCpfCnpj;
-    @FXML
-    private TableColumn<Cliente, String> colEndereco;
-    @FXML
-    private TableColumn<Cliente, String> colTelefone;
-    @FXML
-    private TableColumn<Cliente, Void> colAcoes;
+    @FXML private TableView<Cliente> tabelaClientes;
+    @FXML private TableColumn<Cliente, Integer> colId;
+    @FXML private TableColumn<Cliente, String> colNome;
+    @FXML private TableColumn<Cliente, String> colCpfCnpj;
+    @FXML private TableColumn<Cliente, String> colEndereco;
+    @FXML private TableColumn<Cliente, String> colTelefone;
+    @FXML private TableColumn<Cliente, Void> colAcoes;
 
-    @FXML
-    private TableView<Veiculo> tabelaVeiculos;
-    @FXML
-    private TableColumn<Veiculo, String> colPlaca;
-    @FXML
-    private TableColumn<Veiculo, String> colModelo;
-    @FXML
-    private TableColumn<Veiculo, Integer> colAno;
-    @FXML
-    private TableColumn<Veiculo, String> colCor;
+    @FXML private TableView<Veiculo> tabelaVeiculos;
+    @FXML private TableColumn<Veiculo, String> colPlaca;
+    @FXML private TableColumn<Veiculo, String> colModelo;
+    @FXML private TableColumn<Veiculo, Integer> colAno;
+    @FXML private TableColumn<Veiculo, String> colCor;
 
-    private ClienteDAO clienteDAO = new ClienteDAO();
-    private VeiculoDAO veiculoDAO = new VeiculoDAO();
+    private ClienteService clienteService = new ClienteService();
+    private VeiculoService veiculoService = new VeiculoService();
     private ObservableList<Cliente> clientesLista = FXCollections.observableArrayList();
     private ObservableList<Veiculo> veiculosLista = FXCollections.observableArrayList();
 
@@ -85,18 +73,18 @@ public class ClientesController {
     }
 
     private void carregarClientes() {
-        clientesLista.setAll(clienteDAO.listarClientes());
+        clientesLista.setAll(clienteService.listarClientes());
         tabelaClientes.setItems(clientesLista);
     }
 
     private void carregarVeiculos(Cliente cliente) {
-        veiculosLista.setAll(veiculoDAO.listarVeiculosPorCliente(cliente.getId()));
+        veiculosLista.setAll(veiculoService.listarVeiculosPorCliente(cliente.getId()));
         tabelaVeiculos.setItems(veiculosLista);
     }
 
     private void editarCliente(Cliente cliente) {
         System.out.println("Editar cliente: " + cliente.getNome());
-        // Aqui você pode abrir outra tela para edição
+        // Lógica de edição de cliente
     }
 
     private void excluirCliente(Cliente cliente) {
@@ -106,7 +94,7 @@ public class ClientesController {
         alerta.setContentText(cliente.getNome());
 
         if (alerta.showAndWait().get() == ButtonType.OK) {
-            clienteDAO.excluirCliente(cliente.getId());
+            clienteService.excluirCliente(cliente.getId());
             carregarClientes();
             veiculosLista.clear();
         }
@@ -114,6 +102,7 @@ public class ClientesController {
 
     @FXML
     private void voltar() {
-        // Código para voltar à tela anterior, caso necessário
+        // Código para voltar à tela anterior (caso tenha um controlador para navegação entre telas)
+        System.out.println("Voltar para tela anterior");
     }
 }

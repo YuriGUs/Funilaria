@@ -22,22 +22,38 @@ public class DatabaseConnection {
 
     // Cria tabela no BD
     public static void criarTabelas() {
-        System.out.println("Criando tabela 'clientes' no banco de dados...");
-        String sql = "CREATE TABLE IF NOT EXISTS clientes (" +
+        System.out.println("Criando tabelas no banco de dados...");
+
+        String sqlClientes = "CREATE TABLE IF NOT EXISTS clientes (" +
                 "id INTEGER PRIMARY KEY AUTOINCREMENT, " +
                 "nome TEXT NOT NULL, " +
                 "cpf_cnpj TEXT NOT NULL UNIQUE, " +
                 "endereco TEXT NOT NULL, " +
                 "telefone TEXT NOT NULL)";
 
+        String sqlVeiculos = "CREATE TABLE IF NOT EXISTS veiculos (" +
+                "id INTEGER PRIMARY KEY AUTOINCREMENT, " +
+                "cliente_id INTEGER NOT NULL, " +
+                "placa TEXT NOT NULL, " +
+                "modelo TEXT NOT NULL, " +
+                "ano INTEGER NOT NULL, " +
+                "cor TEXT NOT NULL, " +
+                "FOREIGN KEY (cliente_id) REFERENCES clientes(id) ON DELETE CASCADE)";
+
         try (Connection conn = connect();
              Statement stmt = conn.createStatement()) {
-            stmt.execute(sql);
-            System.out.println("Tabela criada/verificada com sucesso!");
+
+            stmt.execute(sqlClientes);
+            System.out.println("Tabela 'clientes' criada/verificada com sucesso!");
+
+            stmt.execute(sqlVeiculos);
+            System.out.println("Tabela 'veiculos' criada/verificada com sucesso!");
+
         } catch (SQLException e) {
-            System.out.println("Erro ao criar/verificar tabela: " + e.getMessage());
+            System.out.println("Erro ao criar tabelas: " + e.getMessage());
         }
     }
+
 
     // Testa inserção de um cliente
     public static void inserirCliente(String nome, String cpfCnpj, String endereco, String telefone) {

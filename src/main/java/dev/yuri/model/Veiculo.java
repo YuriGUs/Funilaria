@@ -2,12 +2,13 @@ package dev.yuri.model;
 
 public class Veiculo {
     private int id;
-    private int clienteId;
+    private int clienteId;   // Mantenha o clienteId como um atributo
     private String placa;
     private String modelo;
     private int ano;
     private String cor;
 
+    // Construtor com 5 parâmetros
     public Veiculo(int id, int clienteId, String placa, String modelo, int ano, String cor) {
         this.id = id;
         this.clienteId = clienteId;
@@ -17,27 +18,22 @@ public class Veiculo {
         this.cor = cor;
     }
 
-    public Veiculo(String placa, String modelo, int ano, String cor) {
-        this.placa = placa;
-        this.modelo = modelo;
-        this.ano = ano;
-        this.cor = cor;
-    }
-
-    public int getId() {
-        return id;
-    }
-
-    public void setId(int id) {
-        this.id = id;
-    }
-
+    // Getter e setter para clienteId
     public int getClienteId() {
         return clienteId;
     }
 
     public void setClienteId(int clienteId) {
         this.clienteId = clienteId;
+    }
+
+    // Outros getters e setters
+    public int getId() {
+        return id;
+    }
+
+    public void setId(int id) {
+        this.id = id;
     }
 
     public String getPlaca() {
