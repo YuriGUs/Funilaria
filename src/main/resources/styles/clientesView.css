@@ -1,0 +1,9 @@
+.button {
+    -fx-background-color: #007bff;
+    -fx-text-fill: white;
+    -fx-border-radius: 5px;
+}
+
+.root {
+    -fx-padding: 20px;
+}

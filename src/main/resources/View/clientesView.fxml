@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<VBox xmlns="http://javafx.com/javafx"
+      xmlns:fx="http://javafx.com/fxml"
+      fx:controller="dev.yuri.controller.ClientesController"
+      spacing="10" stylesheets="@/styles/clientesView.css"
+      styleClass="root"  >
+
+    <Label text="Lista de Clientes"/>
+
+    <TableView fx:id="tabelaClientes">
+        <columns>
+            <TableColumn text="ID" fx:id="colId"/>
+            <TableColumn text="Nome" fx:id="colNome"/>
+            <TableColumn text="CPF/CNPJ" fx:id="colCpfCnpj"/>
+            <TableColumn text="Endereço" fx:id="colEndereco"/>
+            <TableColumn text="Telefone" fx:id="colTelefone"/>
+            <TableColumn text="Ações" fx:id="colAcoes"/>
+        </columns>
+    </TableView>
+
+    <Label text="Veículos do Cliente Selecionado"/>
+
+    <TableView fx:id="tabelaVeiculos">
+        <columns>
+            <TableColumn text="Placa" fx:id="colPlaca"/>
+            <TableColumn text="Modelo" fx:id="colModelo"/>
+            <TableColumn text="Ano" fx:id="colAno"/>
+            <TableColumn text="Cor" fx:id="colCor"/>
+        </columns>
+    </TableView>
+
+    <Button text="Voltar" onAction="#voltar"/>
+</VBox>
