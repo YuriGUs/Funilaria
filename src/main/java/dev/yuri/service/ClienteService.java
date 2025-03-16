@@ -25,8 +25,14 @@ public class ClienteService {
         return clienteDAO.deletar(clienteId);
     }
 
-    public void editarCliente(Cliente cliente, List<Veiculo> veiculos) {
-        clienteDAO.atualizar(cliente, veiculos);
+    public boolean editarCliente(Cliente cliente, List<Veiculo> veiculos) {
+        try {
+            clienteDAO.atualizar(cliente, veiculos);
+            return true;
+        } catch (Exception e) {
+            System.out.println("Erro ao editar cliente: " + e.getMessage());
+            return false;
+        }
     }
 
     public synchronized void adicionarCliente(Cliente cliente, List<Veiculo> veiculos) {

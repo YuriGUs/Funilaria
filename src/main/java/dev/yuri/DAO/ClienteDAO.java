@@ -98,6 +98,7 @@ public class ClienteDAO {
         }
     }
 
+
     public List<Cliente> listarClientes() {
         List<Cliente> clientes = new ArrayList<>();
         String sql = "SELECT * FROM clientes";
@@ -157,11 +158,11 @@ public class ClienteDAO {
         }
     }
 
-    public void atualizar(Cliente cliente, List<Veiculo> veiculos) {
+    public void atualizar(Cliente cliente, List<Veiculo> veiculos) throws SQLException {
         String sqlCliente = "UPDATE clientes SET nome = ?, cpf_cnpj = ?, endereco = ?, telefone = ? WHERE id = ?";
 
         try (Connection conn = DatabaseConnection.connect()) {
-            conn.setAutoCommit(false);
+            conn.setAutoCommit(false); // Iniciar transação
 
             // Atualizar cliente
             try (PreparedStatement pstmt = conn.prepareStatement(sqlCliente)) {
@@ -171,13 +172,19 @@ public class ClienteDAO {
                 pstmt.setString(4, cliente.getTelefone());
                 pstmt.setInt(5, cliente.getId());
 
-                pstmt.executeUpdate();
+                int rowsAffected = pstmt.executeUpdate();
+
+                if (rowsAffected == 0) {
+                    System.out.println("Erro: Cliente não encontrado para atualização.");
+                    conn.rollback();
+                    return;
+                }
 
                 // Atualizar ou inserir veículos
                 for (Veiculo veiculo : veiculos) {
-                    if (veiculo.getId() == 0) {
+                    if (veiculo.getId() == 0) { // Novo veículo
                         inserirVeiculo(veiculo, cliente.getId(), conn); // Inserir novo veículo
-                    } else {
+                    } else { // Veículo existente
                         atualizarVeiculo(veiculo, conn); // Atualizar veículo existente
                     }
                 }

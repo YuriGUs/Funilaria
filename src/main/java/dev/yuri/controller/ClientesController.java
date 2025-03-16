@@ -7,10 +7,16 @@ import dev.yuri.service.VeiculoService;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
+import javafx.scene.Parent;
+import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.layout.HBox;
+import javafx.stage.Stage;
 
+import java.io.IOException;
 import java.util.List;
+import java.util.Optional;
 
 public class ClientesController {
 
@@ -106,18 +112,45 @@ public class ClientesController {
         veiculosLista.setAll(veiculoService.listarVeiculosPorCliente(cliente.getId()));
         tabelaVeiculos.setItems(veiculosLista);
     }
-    // TODO fazer logica editar
+
     private void editarCliente(Cliente cliente) {
         System.out.println("Editar cliente: " + cliente.getNome());
-        // Lógica de edição de cliente
+
+        // Criar uma janela de confirmação
+        Alert alerta = new Alert(Alert.AlertType.CONFIRMATION);
+        alerta.setTitle("Confirmação");
+        alerta.setHeaderText("Tem certeza que deseja editar este cliente?");
+        alerta.setContentText("Nome: " + cliente.getNome());
+
+        Optional<ButtonType> resultado = alerta.showAndWait();
+        if (resultado.isPresent() && resultado.get() == ButtonType.OK) {
+            // Chama a função para abrir a tela de edição
+            abrirTelaEdicao(cliente);
+        }
     }
 
-    private void showAlert(String title, String message) {
-        Alert alert = new Alert(Alert.AlertType.INFORMATION);
-        alert.setTitle(title);
-        alert.setHeaderText(null);
-        alert.setContentText(message);
-        alert.showAndWait();
+    private void abrirTelaEdicao(Cliente cliente) {
+        try {
+            // Carregar o arquivo FXML da tela de edição
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/View/editarClienteView.fxml"));
+            Parent root = loader.load();
+
+            // Obter o controlador da tela de edição
+            EditarClienteController controladorEditar = loader.getController();
+
+            // Obter os veículos do cliente selecionado
+            List<Veiculo> veiculos = veiculoService.listarVeiculosPorCliente(cliente.getId());
+
+            // Passar o cliente e os veículos para o controlador de edição
+            controladorEditar.setCliente(cliente, veiculos);
+
+            // Criar a nova janela
+            Stage stage = new Stage();
+            stage.setScene(new Scene(root));
+            stage.show();
+        } catch (IOException e) {
+            System.out.println("Erro ao abrir a tela de edição: " + e.getMessage());
+        }
     }
 
     private void excluirCliente(Cliente cliente) {
@@ -136,6 +169,14 @@ public class ClientesController {
                 showAlert("Erro", "Não foi possível excluir o cliente.");
             }
         }
+    }
+
+    private void showAlert(String title, String message) {
+        Alert alert = new Alert(Alert.AlertType.INFORMATION);
+        alert.setTitle(title);
+        alert.setHeaderText(null);
+        alert.setContentText(message);
+        alert.showAndWait();
     }
     @FXML
     private void handleClienteSelecionado() {
