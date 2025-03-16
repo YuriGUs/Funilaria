@@ -23,6 +23,16 @@ public class Veiculo {
         this.clienteId = new SimpleIntegerProperty(clienteId);
     }
 
+    // Construtor alternativo (com 4 parâmetros)
+    public Veiculo(String placa, String modelo, int ano, String cor) {
+        this.id = new SimpleIntegerProperty(0); // id default como 0, pois pode ser gerado automaticamente
+        this.placa = new SimpleStringProperty(placa);
+        this.modelo = new SimpleStringProperty(modelo);
+        this.ano = new SimpleIntegerProperty(ano);
+        this.cor = new SimpleStringProperty(cor);
+        this.clienteId = new SimpleIntegerProperty(0); // clienteId default como 0
+    }
+
     // Getters para JavaFX Property
     public IntegerProperty idProperty() { return id; }
     public StringProperty placaProperty() { return placa; }

@@ -1,0 +1,81 @@
+/* Estilo geral para o layout */
+.root {
+    -fx-padding: 20px;
+    -fx-background-color: #f5f5f5;
+}
+
+/* Estilo para o painel do veículo (campo de inserção de veículo) */
+#painelVeiculo {
+    -fx-background-color: #ffffff;
+    -fx-border-radius: 10px;
+    -fx-border-color: #ddd;
+    -fx-padding: 15px;
+    -fx-spacing: 10px;
+    -fx-max-width: 400px;
+    -fx-max-height: 300px;
+    -fx-alignment: center;
+}
+
+/* Estilo para os campos de texto (entrada de dados) */
+.text-field {
+    -fx-background-color: #ffffff;
+    -fx-border-color: #ccc;
+    -fx-border-radius: 5px;
+    -fx-padding: 8px;
+    -fx-font-size: 14px;
+    -fx-pref-width: 250px;
+}
+
+/* Estilo para os botões */
+.button {
+    -fx-background-color: #4CAF50;
+    -fx-text-fill: white;
+    -fx-padding: 10px 15px;
+    -fx-font-size: 14px;
+    -fx-border-radius: 5px;
+    -fx-effect: innershadow(gaussian, rgba(0, 0, 0, 0.2), 5, 0, 0, 2);
+}
+
+/* Botão "Salvar Veículo" */
+#btnSalvarVeiculo {
+    -fx-background-color: #4CAF50;
+    -fx-text-fill: white;
+    -fx-padding: 10px 15px;
+    -fx-font-size: 14px;
+    -fx-border-radius: 5px;
+    -fx-alignment: BOTTOM_CENTER;
+}
+
+
+/* Espaçamento entre os campos de veículo */
+#vboxVeiculos {
+    -fx-spacing: 15px;
+}
+
+/* Alinhamento do botão "Salvar" na parte inferior */
+#btnSalvar {
+    -fx-align-self: center;
+    -fx-background-color: #3e8e41;
+    -fx-text-fill: white;
+    -fx-padding: 12px 20px;
+    -fx-font-size: 16px;
+    -fx-border-radius: 5px;
+    -fx-max-width: 200px; /* Limita a largura do botão */
+}
+
+/* Estilo para os campos de texto no painel de veículos */
+#campoPlaca, #campoModelo, #campoAno, #campoCor {
+    -fx-background-color: #ffffff;
+    -fx-border-color: #ccc;
+    -fx-border-radius: 5px;
+    -fx-padding: 8px;
+    -fx-font-size: 14px;
+    -fx-pref-width: 250px;
+}
+
+/* Estilo para os campos de texto no vbox de veículos */
+#vboxVeiculos .text-field {
+    -fx-padding: 8px;
+    -fx-font-size: 14px;
+    -fx-pref-width: 250px;
+}
