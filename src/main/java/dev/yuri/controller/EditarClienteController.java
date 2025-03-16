@@ -36,13 +36,18 @@ public class EditarClienteController {
 
     // Mét0do para salvar o veículo
     @FXML
-    private void salvarVeiculo() {
+    private synchronized void salvarVeiculo() {
         String placa = campoPlaca.getText();
         String modelo = campoModelo.getText();
         String anoStr = campoAno.getText();
         String cor = campoCor.getText();
 
-        int ano = 0;
+        if (placa.isEmpty() || modelo.isEmpty() || anoStr.isEmpty() || cor.isEmpty()) {
+            System.out.println("Todos os campos do veículo devem ser preenchidos!");
+            return;
+        }
+
+        int ano;
         try {
             ano = Integer.parseInt(anoStr);  // Converter para int
         } catch (NumberFormatException e) {
@@ -51,18 +56,24 @@ public class EditarClienteController {
         }
 
         // Criando o novo veículo
-        Veiculo novoVeiculo = new Veiculo(placa, modelo, ano, cor);
-
-        // Adicionando o novo veículo à lista de veículos do cliente
+        Veiculo novoVeiculo = new Veiculo(0, placa, modelo, ano, cor, cliente.getId());
         veiculoWrappers.add(new VeiculoWrapper(novoVeiculo, campoPlaca, campoModelo, campoAno, campoCor));
 
-        // Após salvar, você pode limpar os campos ou ocultar o painel novamente
+        // Limpa e atualiza interface
         campoPlaca.clear();
         campoModelo.clear();
         campoAno.clear();
         campoCor.clear();
         painelVeiculo.setVisible(false); // Oculta o painel após salvar
-        carregarVeiculos(cliente.getVeiculos()); // Atualiza a exibição dos veículos
+        carregarVeiculos(getVeiculosFromWrappers()); // Atualiza a exibição dos veículos (todos)
+    }
+
+    private List<Veiculo> getVeiculosFromWrappers() {
+        List<Veiculo> veiculos = new ArrayList<>();
+        for (VeiculoWrapper wrapper : veiculoWrappers) {
+            veiculos.add(wrapper.getVeiculo());
+        }
+        return veiculos;
     }
 
     // Mét0do para configurar o cliente e seus veículos
@@ -72,12 +83,7 @@ public class EditarClienteController {
         txtCpfCnpj.setText(cliente.getCpfCnpj());
         txtEndereco.setText(cliente.getEndereco());
         txtTelefone.setText(cliente.getTelefone());
-
-        if (veiculos == null) {
-            veiculos = new ArrayList<>();  // Substituindo null por uma lista vazia
-        }
-
-        carregarVeiculos(veiculos);  // Carregar os veículos na tela
+        carregarVeiculos(veiculos != null ? veiculos : new ArrayList<>());
     }
 
     // Mét0do para carregar os veículos dinamicamente na tela
@@ -111,7 +117,11 @@ public class EditarClienteController {
 
     // Mét0do para salvar as edições do cliente e seus veículos
     @FXML
-    private void salvarEdicao() {
+    private synchronized void salvarEdicao() {
+        if (txtNome.getText().isEmpty() || txtCpfCnpj.getText().isEmpty() || txtEndereco.getText().isEmpty() || txtTelefone.getText().isEmpty()) {
+            System.out.println("Todos os campos do cliente devem ser preenchidos!");
+            return;
+        }
         cliente.setNome(txtNome.getText());
         cliente.setCpfCnpj(txtCpfCnpj.getText());
         cliente.setEndereco(txtEndereco.getText());
@@ -122,7 +132,8 @@ public class EditarClienteController {
             Veiculo veiculo = wrapper.getVeiculo();
             veiculo.setPlaca(wrapper.getTxtPlaca().getText());
             veiculo.setModelo(wrapper.getTxtModelo().getText());
-            veiculo.setAno(wrapper.getTxtAno().getText().isEmpty() ? 0 : Integer.parseInt(wrapper.getTxtAno().getText()));
+            String anoText = wrapper.getTxtAno().getText();
+            veiculo.setAno(anoText.isEmpty() ? 0 : Integer.parseInt(anoText));
             veiculo.setCor(wrapper.getTxtCor().getText());
             veiculosAtualizados.add(veiculo);
         }
@@ -130,7 +141,8 @@ public class EditarClienteController {
         try {
             new ClienteDAO().atualizar(cliente, veiculosAtualizados);  // Atualiza o cliente e os veículos no banco
         } catch (SQLException e) {
-            System.out.println("Erro ao salvar as edições: " + e.getMessage());
+            System.out.println("Erro ao salvar as edições: " + e.getMessage()); // TODO trocar para alert
+            e.printStackTrace();
         }
         fecharJanela();  // Fecha a janela de edição
     }

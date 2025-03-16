@@ -74,25 +74,23 @@ public class VeiculoDAO {
         List<Veiculo> veiculos = new ArrayList<>();
         String sql = "SELECT * FROM veiculos WHERE cliente_id = ?";
 
-        try (Connection conn = DatabaseConnection.connect();
-             PreparedStatement pstmt = conn.prepareStatement(sql)) {
-
-            pstmt.setInt(1, clienteId);
-            ResultSet rs = pstmt.executeQuery();
-
-            while (rs.next()) {
-                Veiculo veiculo = new Veiculo(
-                        rs.getInt("id"),
-                        rs.getString("placa"),
-                        rs.getString("modelo"),
-                        rs.getInt("ano"),
-                        rs.getString("cor"),
-                        rs.getInt(clienteId)
-                );
-                veiculos.add(veiculo);
+        Connection conn = DatabaseConnection.connect();
+        try (PreparedStatement psmt = conn.prepareStatement(sql)) {
+            psmt.setInt(1, clienteId);
+            try (ResultSet rs = psmt.executeQuery()){
+                while (rs.next()) {
+                    Veiculo veiculo = new Veiculo(
+                            rs.getInt("id"),
+                            rs.getString("placa"),
+                            rs.getString("modelo"),
+                            rs.getInt("ano"),
+                            rs.getString("cor"),
+                            rs.getInt("cliente_id")
+                    );
+                    veiculos.add(veiculo);
+                }
             }
-
-        } catch (SQLException e) {
+        } catch (SQLException  e) {
             System.out.println("Erro ao buscar veículos: " + e.getMessage());
         }
         return veiculos;

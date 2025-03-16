@@ -38,11 +38,6 @@ public class ClienteService {
     public synchronized void adicionarCliente(Cliente cliente, List<Veiculo> veiculos) {
         // Chama o mét0do do DAO para adicionar o cliente
         clienteDAO.salvar(cliente, veiculos);
-
-        // Agora chama o VeiculoDAO para adicionar os veículos, caso existam
-        for (Veiculo veiculo : veiculos) {
-            veiculoDAO.salvar(veiculo);
-        }
     }
 
 }

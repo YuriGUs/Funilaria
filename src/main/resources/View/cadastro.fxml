@@ -4,10 +4,13 @@
 <?import javafx.scene.control.TextField?>
 <?import javafx.scene.layout.VBox?>
 
+<?import javafx.scene.control.Label?>
 <VBox xmlns="http://javafx.com/javafx"
       xmlns:fx="http://javafx.com/fxml"
       fx:controller="dev.yuri.controller.CadastroController"
       spacing="10" stylesheets="@/styles/cadastro_cliente.css">
+
+    <Label text="Cadastre seu cliente" />
 
     <TextField fx:id="txtNome" promptText="Nome" />
     <TextField fx:id="txtCpfCnpj" promptText="CPF ou CNPJ" />

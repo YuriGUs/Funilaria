@@ -98,15 +98,13 @@ public class ClienteDAO {
         }
     }
 
-
     public List<Cliente> listarClientes() {
         List<Cliente> clientes = new ArrayList<>();
         String sql = "SELECT * FROM clientes";
 
-        try (Connection conn = DatabaseConnection.connect();
-             PreparedStatement pstmt = conn.prepareStatement(sql);
+        Connection conn = DatabaseConnection.connect();
+        try (PreparedStatement pstmt = conn.prepareStatement(sql);
              ResultSet rs = pstmt.executeQuery()) {
-
             while (rs.next()) {
                 Cliente cliente = new Cliente(
                         rs.getInt("id"),
@@ -117,7 +115,6 @@ public class ClienteDAO {
                 );
                 clientes.add(cliente);
             }
-
         } catch (SQLException e) {
             System.out.println("Erro ao listar clientes: " + e.getMessage());
         }
@@ -159,45 +156,62 @@ public class ClienteDAO {
     }
 
     public void atualizar(Cliente cliente, List<Veiculo> veiculos) throws SQLException {
-        String sqlCliente = "UPDATE clientes SET nome = ?, cpf_cnpj = ?, endereco = ?, telefone = ? WHERE id = ?";
+        // Atualizando o codigo para tentar evitar o [SQLITE_BUSY]
+        Connection conn = DatabaseConnection.connect();
+        int tentativas = 0;
+        int maxTentativas = 5;
+        long intervalo = 500; // 500ms
 
-        try (Connection conn = DatabaseConnection.connect()) {
-            conn.setAutoCommit(false); // Iniciar transação
+        while (tentativas < maxTentativas) {
+            try {
+                conn.setAutoCommit(false);
 
-            // Atualizar cliente
-            try (PreparedStatement pstmt = conn.prepareStatement(sqlCliente)) {
-                pstmt.setString(1, cliente.getNome());
-                pstmt.setString(2, cliente.getCpfCnpj());
-                pstmt.setString(3, cliente.getEndereco());
-                pstmt.setString(4, cliente.getTelefone());
-                pstmt.setInt(5, cliente.getId());
+                String sqlCliente = "UPDATE clientes SET nome = ?, cpf_cnpj = ?, endereco = ?, telefone = ? WHERE id = ?";
+                try (PreparedStatement pstmt = conn.prepareStatement(sqlCliente)){
+                    pstmt.setString(1, cliente.getNome());
+                    pstmt.setString(2, cliente.getCpfCnpj());
+                    pstmt.setString(3, cliente.getEndereco());
+                    pstmt.setString(4, cliente.getTelefone());
+                    pstmt.setInt(5, cliente.getId());
+                    int rowsAffected = pstmt.executeUpdate();
 
-                int rowsAffected = pstmt.executeUpdate();
-
-                if (rowsAffected == 0) {
-                    System.out.println("Erro: Cliente não encontrado para atualização.");
-                    conn.rollback();
-                    return;
-                }
-
-                // Atualizar ou inserir veículos
-                for (Veiculo veiculo : veiculos) {
-                    if (veiculo.getId() == 0) { // Novo veículo
-                        inserirVeiculo(veiculo, cliente.getId(), conn); // Inserir novo veículo
-                    } else { // Veículo existente
-                        atualizarVeiculo(veiculo, conn); // Atualizar veículo existente
+                    if (rowsAffected == 0) {
+                        System.out.println("Erro: Cliente não encontrado para atualização.");
+                        conn.rollback();
+                        return;
                     }
                 }
 
-                // Commitar transação
+                for (Veiculo veiculo : veiculos) {
+                    if (veiculo.getId() == 0) {
+                        inserirVeiculo(veiculo, cliente.getId(), conn);
+                    } else {
+                        atualizarVeiculo(veiculo, conn);
+                    }
+                }
+
                 conn.commit();
+                System.out.println("Cliente e veículos atualizados com sucesso!");
+                break; // Sai do loop se a operação for bem-sucedida ?
             } catch (SQLException e) {
                 conn.rollback();
-                System.out.println("Erro ao atualizar cliente e veículos: " + e.getMessage());
+                if (e.getMessage().contains("SQLITE_BUSY") && tentativas < maxTentativas - 1) {
+                    tentativas++;
+                    System.out.println("Banco ocupado, tentando novamente... Tentativa " + tentativas);
+                    try {
+                        Thread.sleep(intervalo);
+                    } catch (InterruptedException ie) {
+                        Thread.currentThread().interrupt();
+                    }
+                } else {
+                    System.out.println("Erro ao atualizar cliente e veículos: " + e.getMessage());
+                    throw e;
+                }
             }
-        } catch (SQLException e) {
-            System.out.println("Erro ao conectar ao banco: " + e.getMessage());
         }
+
+
+
     }
 
     private void inserirVeiculo(Veiculo veiculo, int clienteId, Connection conn) throws SQLException {
