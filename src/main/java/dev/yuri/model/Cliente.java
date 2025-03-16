@@ -12,21 +12,25 @@ public class Cliente {
     private StringProperty telefone;
     private List<Veiculo> veiculos; // Relação 1:N
 
+    // Construtor com ID
     public Cliente(int id, String nome, String cpfCnpj, String endereco, String telefone) {
-        this.id = new SimpleIntegerProperty(id);
+        this.id = new SimpleIntegerProperty(id); // Usando o ID passado
         this.nome = new SimpleStringProperty(nome);
         this.cpfCnpj = new SimpleStringProperty(cpfCnpj);
         this.endereco = new SimpleStringProperty(endereco);
         this.telefone = new SimpleStringProperty(telefone);
     }
 
+    // Construtor sem ID (ID será gerado automaticamente)
     public Cliente(String nome, String cpfCnpj, String endereco, String telefone) {
+        this.id = new SimpleIntegerProperty(-1);  // Inicializando com -1, pois o banco irá gerar o ID
         this.nome = new SimpleStringProperty(nome);
         this.cpfCnpj = new SimpleStringProperty(cpfCnpj);
         this.endereco = new SimpleStringProperty(endereco);
         this.telefone = new SimpleStringProperty(telefone);
     }
 
+    // Getters e setters para todos os campos
     public int getId() {
         return id.get();
     }

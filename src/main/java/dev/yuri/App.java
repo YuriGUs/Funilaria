@@ -24,7 +24,7 @@ public class App extends Application {
 
         // Criando os botões do menu
         Button btn1 = new Button("Cadastro");
-        Button btn2 = new Button("Cadastro de veículo");
+        Button btn2 = new Button("Lista de clientes");
         Button btn3 = new Button("Orçamento");
 
         // Definindo o tamanho dos botões
@@ -73,6 +73,7 @@ public class App extends Application {
     }
 
     public static void main(String[] args) {
+        dev.yuri.Util.DatabaseConnection.criarTabelas();
         launch();
     }
 }

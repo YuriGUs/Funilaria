@@ -1,58 +1,56 @@
 package dev.yuri.controller;
 
-import dev.yuri.DAO.ClienteDAO;
-import dev.yuri.DAO.VeiculoDAO;
 import dev.yuri.model.Cliente;
 import dev.yuri.model.Veiculo;
+import dev.yuri.service.ClienteService;
+import dev.yuri.service.VeiculoService;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
 import javafx.scene.layout.HBox;
 
+import java.util.List;
+
 public class ClientesController {
 
-    @FXML
-    private TableView<Cliente> tabelaClientes;
-    @FXML
-    private TableColumn<Cliente, Integer> colId;
-    @FXML
-    private TableColumn<Cliente, String> colNome;
-    @FXML
-    private TableColumn<Cliente, String> colCpfCnpj;
-    @FXML
-    private TableColumn<Cliente, String> colEndereco;
-    @FXML
-    private TableColumn<Cliente, String> colTelefone;
-    @FXML
-    private TableColumn<Cliente, Void> colAcoes;
+    @FXML private TableView<Cliente> tabelaClientes;
+    @FXML private TableColumn<Cliente, Integer> colId;
+    @FXML private TableColumn<Cliente, String> colNome;
+    @FXML private TableColumn<Cliente, String> colCpfCnpj;
+    @FXML private TableColumn<Cliente, String> colEndereco;
+    @FXML private TableColumn<Cliente, String> colTelefone;
+    @FXML private TableColumn<Cliente, Void> colAcoes;
 
-    @FXML
-    private TableView<Veiculo> tabelaVeiculos;
-    @FXML
-    private TableColumn<Veiculo, String> colPlaca;
-    @FXML
-    private TableColumn<Veiculo, String> colModelo;
-    @FXML
-    private TableColumn<Veiculo, Integer> colAno;
-    @FXML
-    private TableColumn<Veiculo, String> colCor;
+    @FXML private TableView<Veiculo> tabelaVeiculos;
+    @FXML private TableColumn<Veiculo, String> colPlaca;
+    @FXML private TableColumn<Veiculo, String> colModelo;
+    @FXML private TableColumn<Veiculo, Integer> colAno;
+    @FXML private TableColumn<Veiculo, String> colCor;
 
-    private ClienteDAO clienteDAO = new ClienteDAO();
-    private VeiculoDAO veiculoDAO = new VeiculoDAO();
+    private ClienteService clienteService = new ClienteService();
+    private VeiculoService veiculoService = new VeiculoService();
     private ObservableList<Cliente> clientesLista = FXCollections.observableArrayList();
     private ObservableList<Veiculo> veiculosLista = FXCollections.observableArrayList();
 
     @FXML
     public void initialize() {
         configurarColunasClientes();
+        configurarColunasVeiculos();
         carregarClientes();
 
         tabelaClientes.getSelectionModel().selectedItemProperty().addListener((obs, antigo, novo) -> {
             if (novo != null) {
-                carregarVeiculos(novo);
+                handleClienteSelecionado();
             }
         });
+    }
+
+    private void configurarColunasVeiculos() {
+        colPlaca.setCellValueFactory(dados -> dados.getValue().placaProperty());
+        colModelo.setCellValueFactory(dados -> dados.getValue().modeloProperty());
+        colAno.setCellValueFactory(dados -> dados.getValue().anoProperty().asObject());
+        colCor.setCellValueFactory(dados -> dados.getValue().corProperty());
     }
 
     private void configurarColunasClientes() {
@@ -85,18 +83,41 @@ public class ClientesController {
     }
 
     private void carregarClientes() {
-        clientesLista.setAll(clienteDAO.listarClientes());
+        clientesLista.setAll(clienteService.listarClientes());
         tabelaClientes.setItems(clientesLista);
     }
 
     private void carregarVeiculos(Cliente cliente) {
-        veiculosLista.setAll(veiculoDAO.listarVeiculosPorCliente(cliente.getId()));
+        if (cliente == null) {
+            System.out.println("Nenhum cliente valido para buscar veiculos");
+            return;
+        }
+
+        System.out.println("Buscando veiculos para o cliente ID: " + cliente.getId());
+
+        List<Veiculo> veiculos = veiculoService.listarVeiculosPorCliente(cliente.getId());
+
+        if (veiculos.isEmpty()) {
+            System.out.println("Nenhum veiculo encontrado para este cliente");
+        } else {
+            System.out.println("Veiculos encontrados: " + veiculos.size());
+        }
+
+        veiculosLista.setAll(veiculoService.listarVeiculosPorCliente(cliente.getId()));
         tabelaVeiculos.setItems(veiculosLista);
     }
-
+    // TODO fazer logica editar
     private void editarCliente(Cliente cliente) {
         System.out.println("Editar cliente: " + cliente.getNome());
-        // Aqui você pode abrir outra tela para edição
+        // Lógica de edição de cliente
+    }
+
+    private void showAlert(String title, String message) {
+        Alert alert = new Alert(Alert.AlertType.INFORMATION);
+        alert.setTitle(title);
+        alert.setHeaderText(null);
+        alert.setContentText(message);
+        alert.showAndWait();
     }
 
     private void excluirCliente(Cliente cliente) {
@@ -106,14 +127,37 @@ public class ClientesController {
         alerta.setContentText(cliente.getNome());
 
         if (alerta.showAndWait().get() == ButtonType.OK) {
-            clienteDAO.excluirCliente(cliente.getId());
-            carregarClientes();
-            veiculosLista.clear();
+            boolean sucesso = clienteService.excluirCliente(cliente.getId());
+
+            if (sucesso) {
+                carregarClientes();
+                veiculosLista.clear();
+            } else {
+                showAlert("Erro", "Não foi possível excluir o cliente.");
+            }
         }
     }
+    @FXML
+    private void handleClienteSelecionado() {
+        Cliente clienteSelecionado = tabelaClientes.getSelectionModel().getSelectedItem();
 
+        if (clienteSelecionado != null) {
+            System.out.println("Cliente selecionado: " + clienteSelecionado.getNome());
+            // Obter os veículos do cliente selecionado
+            List<Veiculo> veiculos = veiculoService.listarVeiculosPorCliente(clienteSelecionado.getId());
+
+            carregarVeiculos(clienteSelecionado);
+
+            // Atualizar a tabela de veículos
+            tabelaVeiculos.getItems().clear();
+            tabelaVeiculos.getItems().addAll(veiculos);
+        } else {
+            System.out.println("Nenhum cliente selecionado.");
+        }
+    }
     @FXML
     private void voltar() {
-        // Código para voltar à tela anterior, caso necessário
+        // Código para voltar à tela anterior (caso tenha um controlador para navegação entre telas)
+        System.out.println("Voltar para tela anterior");
     }
 }

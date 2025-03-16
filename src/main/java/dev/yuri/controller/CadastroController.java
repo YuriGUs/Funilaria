@@ -1,77 +1,81 @@
 package dev.yuri.controller;
 
-import dev.yuri.DAO.ClienteDAO;
-import dev.yuri.DAO.VeiculoDAO;
 import dev.yuri.model.Cliente;
 import dev.yuri.model.Veiculo;
+import dev.yuri.service.ClienteService;
+import dev.yuri.service.VeiculoService;
 import javafx.fxml.FXML;
 import javafx.scene.control.Alert;
+import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
+import java.util.ArrayList;
+import java.util.List;
 
 public class CadastroController {
 
-    @FXML
-    private TextField txtNome, txtCpfCnpj, txtEndereco, txtTelefone;
-    @FXML
-    private TextField txtPlaca, txtModelo, txtAno, txtCor;
+    @FXML private TextField txtNome;
+    @FXML private TextField txtCpfCnpj;
+    @FXML private TextField txtEndereco;
+    @FXML private TextField txtTelefone;
+    @FXML private TextField txtPlaca;
+    @FXML private TextField txtModelo;
+    @FXML private TextField txtAno;
+    @FXML private TextField txtCor;
 
-    private final ClienteDAO clienteDAO = new ClienteDAO();
-    private final VeiculoDAO veiculoDAO = new VeiculoDAO();
-    private Cliente clienteAtual;
+    @FXML private TableView<Cliente> tabelaClientes;
+    @FXML private TableView<Veiculo> tabelaVeiculos;
 
-    @FXML
-    private void cadastrarCliente() {
-        String nome = txtNome.getText();
-        String cpfCnpj = txtCpfCnpj.getText();
-        String endereco = txtEndereco.getText();
-        String telefone = txtTelefone.getText();
+    private ClienteService clienteService;
+    private VeiculoService veiculoService;
 
-        if (nome.isEmpty() || cpfCnpj.isEmpty() || endereco.isEmpty() || telefone.isEmpty()) {
-            mostrarAlerta("Erro", "Preencha todos os campos!", Alert.AlertType.ERROR);
-            return;
-        }
-
-        Cliente cliente = new Cliente(nome, cpfCnpj, endereco, telefone);
-        clienteDAO.inserirCliente(cliente);
-
-        mostrarAlerta("Sucesso", "Cliente cadastrado com sucesso!", Alert.AlertType.INFORMATION);
-
-        limparCampos();
+    public CadastroController() {
+        this.clienteService = new ClienteService();
+        this.veiculoService = new VeiculoService();
     }
 
     @FXML
-    private void editarCliente() {
+    public synchronized void cadastrarClienteEVeiculo() {
+        // Validar os campos
+        if (txtNome.getText().isEmpty() || txtCpfCnpj.getText().isEmpty() ||
+                txtEndereco.getText().isEmpty() || txtTelefone.getText().isEmpty() ||
+                txtPlaca.getText().isEmpty() || txtModelo.getText().isEmpty() ||
+                txtAno.getText().isEmpty() || txtCor.getText().isEmpty()) {
 
-    }
-
-
-    @FXML
-    private void cadastrarVeiculo() {
-        String placa = txtPlaca.getText();
-        String modelo = txtModelo.getText();
-        String anoTexto = txtAno.getText();
-        String cor = txtCor.getText();
-
-        if (placa.isEmpty() || modelo.isEmpty() || anoTexto.isEmpty() || cor.isEmpty()) {
-            mostrarAlerta("Erro", "Preencha todos os campos!", Alert.AlertType.ERROR);
+            showAlert("Erro", "Todos os campos devem ser preenchidos.");
             return;
         }
 
-        int ano;
+        // Criando o Cliente (ID será gerado pelo banco)
+        Cliente cliente = new Cliente(
+                txtNome.getText(),
+                txtCpfCnpj.getText(),
+                txtEndereco.getText(),
+                txtTelefone.getText()
+        );
 
-        try {
-            ano = Integer.parseInt(anoTexto);
-        } catch (NumberFormatException e) {
-            mostrarAlerta("Erro", "Ano deve ser um número válido!", Alert.AlertType.ERROR);
-            return;
-        }
+        // pegar id gerado do cliente
+        int clienteID = cliente.getId();
 
-        Veiculo veiculo = new Veiculo(placa, modelo, ano, cor);
-        veiculoDAO.inserirVeiculo(veiculo);
+        // Criando o Veículo associado ao cliente
+        Veiculo veiculo = new Veiculo(
+                0,  // O ID do veículo será gerado no banco
+                txtPlaca.getText(),
+                txtModelo.getText(),
+                Integer.parseInt(txtAno.getText()),
+                txtCor.getText(),
+                clienteID
+        );
 
-        mostrarAlerta("Sucesso", "Cliente cadastrado com sucesso!", Alert.AlertType.INFORMATION);
+        List<Veiculo> veiculos = new ArrayList<>();
+        veiculos.add(veiculo);
 
+        // Agora sim, salvar Cliente e Veículos juntos
+        clienteService.adicionarCliente(cliente, veiculos);
+
+        // Limpar os campos após salvar
         limparCampos();
+
+        showAlert("Sucesso", "Cliente e Veículo cadastrados com sucesso!");
     }
 
     private void limparCampos() {
@@ -79,19 +83,17 @@ public class CadastroController {
         txtCpfCnpj.clear();
         txtEndereco.clear();
         txtTelefone.clear();
-
         txtPlaca.clear();
         txtModelo.clear();
         txtAno.clear();
         txtCor.clear();
-
     }
 
-    private void mostrarAlerta(String titulo, String mensagem, Alert.AlertType tipo) {
-        Alert alert = new Alert(tipo);
-        alert.setTitle(titulo);
+    private void showAlert(String title, String message) {
+        Alert alert = new Alert(Alert.AlertType.INFORMATION);
+        alert.setTitle(title);
         alert.setHeaderText(null);
-        alert.setContentText(mensagem);
+        alert.setContentText(message);
         alert.showAndWait();
     }
 }

@@ -1,74 +1,49 @@
 package dev.yuri.model;
 
+import javafx.beans.property.IntegerProperty;
+import javafx.beans.property.SimpleIntegerProperty;
+import javafx.beans.property.SimpleStringProperty;
+import javafx.beans.property.StringProperty;
+
 public class Veiculo {
-    private int id;
-    private int clienteId;
-    private String placa;
-    private String modelo;
-    private int ano;
-    private String cor;
+    private final IntegerProperty id;
+    private final StringProperty placa;
+    private final StringProperty modelo;
+    private final IntegerProperty ano;
+    private final StringProperty cor;
+    private final IntegerProperty clienteId;
 
-    public Veiculo(int id, int clienteId, String placa, String modelo, int ano, String cor) {
-        this.id = id;
-        this.clienteId = clienteId;
-        this.placa = placa;
-        this.modelo = modelo;
-        this.ano = ano;
-        this.cor = cor;
+    // Construtor com 5 parâmetros
+    public Veiculo(int id, String placa, String modelo, int ano, String cor, int clienteId) {
+        this.id = new SimpleIntegerProperty(id);
+        this.placa = new SimpleStringProperty(placa);
+        this.modelo = new SimpleStringProperty(modelo);
+        this.ano = new SimpleIntegerProperty(ano);
+        this.cor = new SimpleStringProperty(cor);
+        this.clienteId = new SimpleIntegerProperty(clienteId);
     }
 
-    public Veiculo(String placa, String modelo, int ano, String cor) {
-        this.placa = placa;
-        this.modelo = modelo;
-        this.ano = ano;
-        this.cor = cor;
-    }
+    // Getters para JavaFX Property
+    public IntegerProperty idProperty() { return id; }
+    public StringProperty placaProperty() { return placa; }
+    public StringProperty modeloProperty() { return modelo; }
+    public IntegerProperty anoProperty() { return ano; }
+    public StringProperty corProperty() { return cor; }
+    public IntegerProperty clienteIdProperty() { return clienteId; }
 
-    public int getId() {
-        return id;
-    }
+    // Getters normais
+    public int getId() { return id.get(); }
+    public String getPlaca() { return placa.get(); }
+    public String getModelo() { return modelo.get(); }
+    public int getAno() { return ano.get(); }
+    public String getCor() { return cor.get(); }
+    public int getClienteId() { return clienteId.get(); }
 
-    public void setId(int id) {
-        this.id = id;
-    }
-
-    public int getClienteId() {
-        return clienteId;
-    }
-
-    public void setClienteId(int clienteId) {
-        this.clienteId = clienteId;
-    }
-
-    public String getPlaca() {
-        return placa;
-    }
-
-    public void setPlaca(String placa) {
-        this.placa = placa;
-    }
-
-    public String getModelo() {
-        return modelo;
-    }
-
-    public void setModelo(String modelo) {
-        this.modelo = modelo;
-    }
-
-    public int getAno() {
-        return ano;
-    }
-
-    public void setAno(int ano) {
-        this.ano = ano;
-    }
-
-    public String getCor() {
-        return cor;
-    }
-
-    public void setCor(String cor) {
-        this.cor = cor;
-    }
+    // Setters normais
+    public void setId(int id) { this.id.set(id); }
+    public void setPlaca(String placa) { this.placa.set(placa); }
+    public void setModelo(String modelo) { this.modelo.set(modelo); }
+    public void setAno(int ano) { this.ano.set(ano); }
+    public void setCor(String cor) { this.cor.set(cor); }
+    public void setClienteId(int clienteId) { this.clienteId.set(clienteId); }
 }
