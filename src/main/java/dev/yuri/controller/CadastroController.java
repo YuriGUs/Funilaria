@@ -34,7 +34,7 @@ public class CadastroController {
     }
 
     @FXML
-    public void cadastrarClienteEVeiculo() {
+    public synchronized void cadastrarClienteEVeiculo() {
         // Validar os campos
         if (txtNome.getText().isEmpty() || txtCpfCnpj.getText().isEmpty() ||
                 txtEndereco.getText().isEmpty() || txtTelefone.getText().isEmpty() ||
@@ -45,7 +45,7 @@ public class CadastroController {
             return;
         }
 
-        // Criando o Cliente sem ID (o ID será gerado automaticamente pelo banco)
+        // Criando o Cliente (ID será gerado pelo banco)
         Cliente cliente = new Cliente(
                 txtNome.getText(),
                 txtCpfCnpj.getText(),
@@ -53,24 +53,23 @@ public class CadastroController {
                 txtTelefone.getText()
         );
 
-        clienteService.adicionarCliente(cliente, new ArrayList<>()); // Salvando cliente antes de veiculos
+        // pegar id gerado do cliente
+        int clienteID = cliente.getId();
 
-        // Criando o Veículo
+        // Criando o Veículo associado ao cliente
         Veiculo veiculo = new Veiculo(
-                0,  // O ID do veículo será atribuído no banco após o insert
-                cliente.getId(),  // Usando o ID do cliente após o cadastro
+                0,  // O ID do veículo será gerado no banco
                 txtPlaca.getText(),
                 txtModelo.getText(),
-                (int) Long.parseLong(txtAno.getText()),
-                txtCor.getText()
+                Integer.parseInt(txtAno.getText()),
+                txtCor.getText(),
+                clienteID
         );
 
-
-        // Criando a lista de veículos (podem ser vários veículos, mas no caso um por vez)
         List<Veiculo> veiculos = new ArrayList<>();
         veiculos.add(veiculo);
 
-        // Salvando o Cliente e seus Veículos
+        // Agora sim, salvar Cliente e Veículos juntos
         clienteService.adicionarCliente(cliente, veiculos);
 
         // Limpar os campos após salvar
@@ -78,21 +77,6 @@ public class CadastroController {
 
         showAlert("Sucesso", "Cliente e Veículo cadastrados com sucesso!");
     }
-
-    @FXML
-    private void handleClienteSelecionado() {
-        Cliente clienteSelecionado = tabelaClientes.getSelectionModel().getSelectedItem();
-
-        if (clienteSelecionado != null) {
-            // Obter os veículos do cliente selecionado
-            List<Veiculo> veiculos = veiculoService.listarVeiculosPorCliente(clienteSelecionado.getId());
-
-            // Atualizar a tabela de veículos
-            tabelaVeiculos.getItems().clear();
-            tabelaVeiculos.getItems().addAll(veiculos);
-        }
-    }
-
 
     private void limparCampos() {
         txtNome.clear();

@@ -21,21 +21,21 @@ public class ClienteService {
         return clienteDAO.listarClientes();
     }
 
-    public void excluirCliente(int clienteId) {
-        clienteDAO.deletar(clienteId);
+    public boolean excluirCliente(int clienteId) {
+        return clienteDAO.deletar(clienteId);
     }
 
     public void editarCliente(Cliente cliente, List<Veiculo> veiculos) {
         clienteDAO.atualizar(cliente, veiculos);
     }
 
-    public void adicionarCliente(Cliente cliente, List<Veiculo> veiculos) {
+    public synchronized void adicionarCliente(Cliente cliente, List<Veiculo> veiculos) {
         // Chama o mét0do do DAO para adicionar o cliente
         clienteDAO.salvar(cliente, veiculos);
 
         // Agora chama o VeiculoDAO para adicionar os veículos, caso existam
         for (Veiculo veiculo : veiculos) {
-            veiculoDAO.inserirVeiculo(veiculo);
+            veiculoDAO.salvar(veiculo);
         }
     }
 
