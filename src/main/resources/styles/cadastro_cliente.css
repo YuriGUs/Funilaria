@@ -1,7 +1,5 @@
 /* Define o estilo do VBox */
-.root {
-    -fx-background-color: #f4f4f4;
-}
+
 
 /* Define o estilo do Label */
 .label {
@@ -39,4 +37,5 @@
 VBox {
     -fx-padding: 20px; /* Margem interna (espécie de padding) */
     -fx-spacing: 10px; /* Espaçamento entre os elementos filhos */
+    -fx-background-color: white;
 }

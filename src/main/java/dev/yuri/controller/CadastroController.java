@@ -26,11 +26,9 @@ public class CadastroController {
     @FXML private TableView<Veiculo> tabelaVeiculos;
 
     private ClienteService clienteService;
-    private VeiculoService veiculoService;
 
     public CadastroController() {
         this.clienteService = new ClienteService();
-        this.veiculoService = new VeiculoService();
     }
 
     @FXML
@@ -52,10 +50,6 @@ public class CadastroController {
                 txtEndereco.getText(),
                 txtTelefone.getText()
         );
-
-        // pegar id gerado do cliente
-        int clienteID = cliente.getId();
-
         // Criando o Veículo associado ao cliente
         Veiculo veiculo = new Veiculo(
                 0,  // O ID do veículo será gerado no banco
@@ -63,7 +57,7 @@ public class CadastroController {
                 txtModelo.getText(),
                 Integer.parseInt(txtAno.getText()),
                 txtCor.getText(),
-                clienteID
+                0
         );
 
         List<Veiculo> veiculos = new ArrayList<>();

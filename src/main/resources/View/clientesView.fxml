@@ -11,7 +11,7 @@
       spacing="10" stylesheets="@/styles/clientesView.css"
       styleClass="root"  >
 
-    <Label text="Lista de Clientes"/>
+    <Label text="Lista de Clientes" styleClass="TituloLista"/>
 
     <TableView fx:id="tabelaClientes">
         <columns>
@@ -24,7 +24,7 @@
         </columns>
     </TableView>
 
-    <Label text="Veículos do Cliente Selecionado"/>
+    <Label text="Veículos do Cliente Selecionado" styleClass="TituloLista"/>
 
     <TableView fx:id="tabelaVeiculos">
         <columns>

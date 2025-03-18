@@ -1,5 +1,6 @@
 package dev.yuri;
 
+import dev.yuri.Util.DatabaseConnection;
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
 import javafx.geometry.Insets;
@@ -20,7 +21,7 @@ public class App extends Application {
         menu.setPadding(new Insets(20));
         menu.setAlignment(Pos.TOP_CENTER);
         menu.setPrefWidth(230);
-        menu.setStyle("-fx-background-color: #2C3E50;");
+        menu.setStyle("-fx-background-color: #708090;");
 
         // Criando os botões do menu
         Button btn1 = new Button("Cadastro");
@@ -52,6 +53,11 @@ public class App extends Application {
         stage.setScene(scene);
         stage.setTitle("Sistema de Funilaria");
         stage.show();
+    }
+
+    @Override
+    public void stop() {
+        DatabaseConnection.close();
     }
 
     // Mét0do para carregar um FXML dentro do StackPane
