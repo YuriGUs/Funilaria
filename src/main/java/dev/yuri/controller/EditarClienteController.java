@@ -4,11 +4,12 @@ import dev.yuri.DAO.ClienteDAO;
 import dev.yuri.model.Cliente;
 import dev.yuri.model.Veiculo;
 import javafx.fxml.FXML;
-import javafx.scene.control.Button;
-import javafx.scene.control.TextField;
-import javafx.scene.layout.AnchorPane;
+import javafx.scene.control.*;
+import javafx.scene.control.cell.PropertyValueFactory;
+import javafx.scene.control.cell.TextFieldTableCell;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
+import javafx.util.converter.IntegerStringConverter;
 
 import java.sql.SQLException;
 import java.util.ArrayList;
@@ -20,18 +21,78 @@ public class EditarClienteController {
     @FXML private TextField txtCpfCnpj;
     @FXML private TextField txtEndereco;
     @FXML private TextField txtTelefone;
-    @FXML private VBox vboxVeiculos;  // Caixa onde os campos dos veículos serão exibidos
+    @FXML private TableView<Veiculo> tableVeiculos; // Substitui VBox por TableView
+    @FXML private TableColumn<Veiculo, String> colPlaca;
+    @FXML private TableColumn<Veiculo, String> colModelo;
+    @FXML private TableColumn<Veiculo, Integer> colAno;
+    @FXML private TableColumn<Veiculo, String> colCor;
     @FXML private Button btnSalvar;
-    @FXML private AnchorPane painelVeiculo;
+    @FXML private VBox painelVeiculo;
     @FXML private TextField campoPlaca, campoModelo, campoAno, campoCor;
+    @FXML private TableColumn<Veiculo, Void> colExcluir; // Tipo Void porque não exibe dados do Veiculo**
+    @FXML private Button btnCancelarVeiculo;
 
     private Cliente cliente;
-    private List<VeiculoWrapper> veiculoWrappers = new ArrayList<>();
+    private List<Veiculo> veiculos; // Lista direta de Veiculo
+
+    // Inicialização do controller (opcional, para configurar a tabela)
+    @FXML
+    private void initialize() {
+        // Configura as colunas da tabela
+        colPlaca.setCellValueFactory(new PropertyValueFactory<>("placa"));
+        colModelo.setCellValueFactory(new PropertyValueFactory<>("modelo"));
+        colAno.setCellValueFactory(new PropertyValueFactory<>("ano"));
+        colCor.setCellValueFactory(new PropertyValueFactory<>("cor"));
+
+        // Torna as colunas editáveis
+        colPlaca.setCellFactory(TextFieldTableCell.forTableColumn());
+        colModelo.setCellFactory(TextFieldTableCell.forTableColumn());
+        colAno.setCellFactory(TextFieldTableCell.forTableColumn(new IntegerStringConverter()));
+        colCor.setCellFactory(TextFieldTableCell.forTableColumn());
+
+        // Atualiza os valores ao editar
+        colPlaca.setOnEditCommit(event -> event.getRowValue().setPlaca(event.getNewValue()));
+        colModelo.setOnEditCommit(event -> event.getRowValue().setModelo(event.getNewValue()));
+        colAno.setOnEditCommit(event -> event.getRowValue().setAno(event.getNewValue()));
+        colCor.setOnEditCommit(event -> event.getRowValue().setCor(event.getNewValue()));
+
+        // Configurando a coluna "Excluir" com botões
+        colExcluir.setCellFactory(column -> {
+            TableCell<Veiculo, Void> cell = new TableCell<>() {
+                private final Button btnExcluir = new Button("Excluir");
+
+                {
+                    btnExcluir.setOnAction(event -> {
+                        Veiculo veiculo = getTableView().getItems().get(getIndex());
+                        veiculos.remove(veiculo);
+                        getTableView().getItems().remove(veiculo);
+                    });
+                    btnExcluir.setStyle(
+                            "-fx-background-color: #f44336; " +
+                                    "-fx-text-fill: white; " +
+                                    "-fx-padding: 5px 10px; " + // Reduz o padding para deixar o botão mais fino
+                                    "-fx-pref-width: 70px;"      // Define uma largura fixa menor
+                    );
+                }
+
+                @Override
+                protected void updateItem(Void item, boolean empty) {
+                    super.updateItem(item, empty);
+                    if (empty) {
+                        setGraphic(null);
+                    } else {
+                        setGraphic(btnExcluir);
+                    }
+                }
+            };
+            return cell;
+        });
+    }
 
     // Mét0do para adicionar um novo veículo
     @FXML
     private void adicionarVeiculo() {
-        painelVeiculo.setVisible(true); // Torna o painel visível para inserir os dados do veículo
+        painelVeiculo.setVisible(true);
     }
 
     // Mét0do para salvar o veículo
@@ -49,70 +110,38 @@ public class EditarClienteController {
 
         int ano;
         try {
-            ano = Integer.parseInt(anoStr);  // Converter para int
+            ano = Integer.parseInt(anoStr);
         } catch (NumberFormatException e) {
             System.out.println("Ano inválido!");
             return;
         }
 
-        // Criando o novo veículo
         Veiculo novoVeiculo = new Veiculo(0, placa, modelo, ano, cor, cliente.getId());
-        veiculoWrappers.add(new VeiculoWrapper(novoVeiculo, campoPlaca, campoModelo, campoAno, campoCor));
+        veiculos.add(novoVeiculo);
+        tableVeiculos.getItems().add(novoVeiculo);
 
-        // Limpa e atualiza interface
         campoPlaca.clear();
         campoModelo.clear();
         campoAno.clear();
         campoCor.clear();
-        painelVeiculo.setVisible(false); // Oculta o painel após salvar
-        carregarVeiculos(getVeiculosFromWrappers()); // Atualiza a exibição dos veículos (todos)
-    }
-
-    private List<Veiculo> getVeiculosFromWrappers() {
-        List<Veiculo> veiculos = new ArrayList<>();
-        for (VeiculoWrapper wrapper : veiculoWrappers) {
-            veiculos.add(wrapper.getVeiculo());
-        }
-        return veiculos;
+        painelVeiculo.setVisible(false);
     }
 
     // Mét0do para configurar o cliente e seus veículos
     public void setCliente(Cliente cliente, List<Veiculo> veiculos) {
         this.cliente = cliente;
+        this.veiculos = veiculos != null ? new ArrayList<>(veiculos) : new ArrayList<>();
         txtNome.setText(cliente.getNome());
         txtCpfCnpj.setText(cliente.getCpfCnpj());
         txtEndereco.setText(cliente.getEndereco());
         txtTelefone.setText(cliente.getTelefone());
-        carregarVeiculos(veiculos != null ? veiculos : new ArrayList<>());
+        carregarVeiculos();
     }
 
-    // Mét0do para carregar os veículos dinamicamente na tela
-    private void carregarVeiculos(List<Veiculo> veiculos) {
-        vboxVeiculos.getChildren().clear();  // Limpar os veículos existentes na interface
-        veiculoWrappers.clear();  // Limpar a lista de wrappers (mapeamento de veículo com campos de texto)
-
-        // Adiciona cada veículo à interface com os campos preenchidos
-        for (Veiculo veiculo : veiculos) {
-            adicionarVeiculo(veiculo); // Preenche os campos com dados existentes do veículo
-        }
-    }
-
-    // Mét0do para adicionar um veículo com campos de texto para cada propriedade
-    private void adicionarVeiculo(Veiculo veiculo) {
-        TextField txtPlaca = new TextField(veiculo.getPlaca());
-        TextField txtModelo = new TextField(veiculo.getModelo());
-        TextField txtAno = new TextField(veiculo.getAno() == 0 ? "" : String.valueOf(veiculo.getAno()));
-        TextField txtCor = new TextField(veiculo.getCor());
-
-        // Define o estilo e a estrutura dos campos de veículo
-        VBox vboxVeiculo = new VBox(5, txtPlaca, txtModelo, txtAno, txtCor);
-        vboxVeiculo.setStyle("-fx-border-color: gray; -fx-padding: 5; -fx-background-color: #f5f5f5;");
-
-        // Adiciona os campos do veículo ao VBox de veículos
-        vboxVeiculos.getChildren().add(vboxVeiculo);
-
-        // Mapeia os campos de texto para o veículo atual
-        veiculoWrappers.add(new VeiculoWrapper(veiculo, txtPlaca, txtModelo, txtAno, txtCor));
+    // Mét0do para carregar os veículos na tabela
+    private void carregarVeiculos() {
+        tableVeiculos.getItems().clear();
+        tableVeiculos.getItems().addAll(veiculos);
     }
 
     // Mét0do para salvar as edições do cliente e seus veículos
@@ -122,29 +151,21 @@ public class EditarClienteController {
             System.out.println("Todos os campos do cliente devem ser preenchidos!");
             return;
         }
+
         cliente.setNome(txtNome.getText());
         cliente.setCpfCnpj(txtCpfCnpj.getText());
         cliente.setEndereco(txtEndereco.getText());
         cliente.setTelefone(txtTelefone.getText());
 
-        List<Veiculo> veiculosAtualizados = new ArrayList<>();
-        for (VeiculoWrapper wrapper : veiculoWrappers) {
-            Veiculo veiculo = wrapper.getVeiculo();
-            veiculo.setPlaca(wrapper.getTxtPlaca().getText());
-            veiculo.setModelo(wrapper.getTxtModelo().getText());
-            String anoText = wrapper.getTxtAno().getText();
-            veiculo.setAno(anoText.isEmpty() ? 0 : Integer.parseInt(anoText));
-            veiculo.setCor(wrapper.getTxtCor().getText());
-            veiculosAtualizados.add(veiculo);
-        }
-
+        // Os veículos já estão atualizados na lista veiculos devido à edição direta na tabela
         try {
-            new ClienteDAO().atualizar(cliente, veiculosAtualizados);  // Atualiza o cliente e os veículos no banco
+            new ClienteDAO().atualizar(cliente, veiculos);
+            System.out.println("Cliente e veículos salvos com sucesso!");
+            fecharJanela();
         } catch (SQLException e) {
-            System.out.println("Erro ao salvar as edições: " + e.getMessage()); // TODO trocar para alert
+            System.out.println("Erro ao salvar as edições: " + e.getMessage());
             e.printStackTrace();
         }
-        fecharJanela();  // Fecha a janela de edição
     }
 
     // Mét0do para fechar a janela de edição
@@ -153,24 +174,12 @@ public class EditarClienteController {
         stage.close();
     }
 
-    // Wrapper para mapear o veículo com seus campos de texto
-    private static class VeiculoWrapper {
-        private Veiculo veiculo;
-        private TextField txtPlaca, txtModelo, txtAno, txtCor;
-
-        public VeiculoWrapper(Veiculo veiculo, TextField txtPlaca, TextField txtModelo, TextField txtAno, TextField txtCor) {
-            this.veiculo = veiculo;
-            this.txtPlaca = txtPlaca;
-            this.txtModelo = txtModelo;
-            this.txtAno = txtAno;
-            this.txtCor = txtCor;
-        }
-
-        public Veiculo getVeiculo() { return veiculo; }
-        public TextField getTxtPlaca() { return txtPlaca; }
-        public TextField getTxtModelo() { return txtModelo; }
-        public TextField getTxtAno() { return txtAno; }
-        public TextField getTxtCor() { return txtCor; }
+    @FXML
+    private void cancelarVeiculo() {
+        campoPlaca.clear();
+        campoModelo.clear();
+        campoAno.clear();
+        campoCor.clear();
+        painelVeiculo.setVisible(false);
     }
-
 }

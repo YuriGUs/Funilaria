@@ -156,7 +156,6 @@ public class ClienteDAO {
     }
 
     public void atualizar(Cliente cliente, List<Veiculo> veiculos) throws SQLException {
-        // Atualizando o codigo para tentar evitar o [SQLITE_BUSY]
         Connection conn = DatabaseConnection.connect();
         int tentativas = 0;
         int maxTentativas = 5;
@@ -166,8 +165,9 @@ public class ClienteDAO {
             try {
                 conn.setAutoCommit(false);
 
+                // Atualizar o cliente
                 String sqlCliente = "UPDATE clientes SET nome = ?, cpf_cnpj = ?, endereco = ?, telefone = ? WHERE id = ?";
-                try (PreparedStatement pstmt = conn.prepareStatement(sqlCliente)){
+                try (PreparedStatement pstmt = conn.prepareStatement(sqlCliente)) {
                     pstmt.setString(1, cliente.getNome());
                     pstmt.setString(2, cliente.getCpfCnpj());
                     pstmt.setString(3, cliente.getEndereco());
@@ -182,17 +182,35 @@ public class ClienteDAO {
                     }
                 }
 
+                // Buscar os veículos atuais do cliente no banco
+                List<Veiculo> veiculosAtuais = new VeiculoDAO().listarVeiculosPorCliente(cliente.getId());
+                List<Integer> idsAtuais = veiculosAtuais.stream().map(Veiculo::getId).toList();
+                List<Integer> idsNovos = veiculos.stream().map(Veiculo::getId).filter(id -> id != 0).toList();
+
+                // Excluir veículos que não estão mais na lista
+                String sqlDelete = "DELETE FROM veiculos WHERE id = ?";
+                try (PreparedStatement pstmtDelete = conn.prepareStatement(sqlDelete)) {
+                    for (Veiculo veiculo : veiculosAtuais) {
+                        if (!idsNovos.contains(veiculo.getId())) {
+                            pstmtDelete.setInt(1, veiculo.getId());
+                            pstmtDelete.executeUpdate();
+                            System.out.println("Veículo com ID " + veiculo.getId() + " excluído do banco.");
+                        }
+                    }
+                }
+
+                // Inserir ou atualizar veículos da lista
                 for (Veiculo veiculo : veiculos) {
                     if (veiculo.getId() == 0) {
                         inserirVeiculo(veiculo, cliente.getId(), conn);
-                    } else {
+                    } else if (idsAtuais.contains(veiculo.getId())) {
                         atualizarVeiculo(veiculo, conn);
                     }
                 }
 
                 conn.commit();
                 System.out.println("Cliente e veículos atualizados com sucesso!");
-                break; // Sai do loop se a operação for bem-sucedida ?
+                break;
             } catch (SQLException e) {
                 conn.rollback();
                 if (e.getMessage().contains("SQLITE_BUSY") && tentativas < maxTentativas - 1) {
@@ -207,11 +225,10 @@ public class ClienteDAO {
                     System.out.println("Erro ao atualizar cliente e veículos: " + e.getMessage());
                     throw e;
                 }
+            } finally {
+                conn.close();
             }
         }
-
-
-
     }
 
     private void inserirVeiculo(Veiculo veiculo, int clienteId, Connection conn) throws SQLException {

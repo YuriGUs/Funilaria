@@ -2,21 +2,23 @@
 .root {
     -fx-padding: 20px;
     -fx-background-color: #f5f5f5;
+    -fx-pref-width: 700px;
 }
 
-/* Estilo para o painel do veículo (campo de inserção de veículo) */
+/* Estilo para o painel do veículo */
 #painelVeiculo {
     -fx-background-color: #ffffff;
     -fx-border-radius: 10px;
     -fx-border-color: #ddd;
+    -fx-border-width: 1px;
     -fx-padding: 15px;
-    -fx-spacing: 10px;
+    -fx-background-radius: 10px;
+    -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.2), 10, 0, 0, 2);
     -fx-max-width: 400px;
-    -fx-max-height: 300px;
-    -fx-alignment: center;
+    -fx-pref-height: 250px;
 }
 
-/* Estilo para os campos de texto (entrada de dados) */
+/* Estilo para os campos de texto */
 .text-field {
     -fx-background-color: #ffffff;
     -fx-border-color: #ccc;
@@ -26,7 +28,7 @@
     -fx-pref-width: 250px;
 }
 
-/* Estilo para os botões */
+/* Estilo geral para os botões */
 .button {
     -fx-background-color: #4CAF50;
     -fx-text-fill: white;
@@ -36,48 +38,33 @@
     -fx-effect: innershadow(gaussian, rgba(0, 0, 0, 0.2), 5, 0, 0, 2);
 }
 
+/* Estilo específico para o botão "Adicionar Veículo" */
+#btnAdicionarVeiculo {
+    -fx-background-color: #2196F3;
+    -fx-pref-width: 150px;
+}
 
+/* Estilo específico para o botão "Salvar" */
+#btnSalvar {
+    -fx-background-color: #3e8e41;
+    -fx-pref-width: 150px;
+}
 
-/* Botão "Salvar Veículo" */
+/* Estilo para o botão "Salvar Veículo" */
 #btnSalvarVeiculo {
     -fx-background-color: #4CAF50;
-    -fx-text-fill: white;
-    -fx-padding: 10px 15px;
-    -fx-font-size: 14px;
-    -fx-border-radius: 5px;
-    -fx-alignment: BOTTOM_CENTER;
 }
 
-
-/* Espaçamento entre os campos de veículo */
-#vboxVeiculos {
-    -fx-spacing: 15px;
+/* Estilo para o botão "Cancelar" */
+#btnCancelarVeiculo {
+    -fx-background-color: #f44336; /* Vermelho para "Cancelar" */
 }
 
-/* Alinhamento do botão "Salvar" na parte inferior */
-#btnSalvar {
-    -fx-align-self: center;
-    -fx-background-color: #3e8e41;
-    -fx-text-fill: white;
-    -fx-padding: 12px 20px;
-    -fx-font-size: 16px;
-    -fx-border-radius: 5px;
-    -fx-max-width: 200px; /* Limita a largura do botão */
+/* Estilo para a tabela */
+.table-view {
+    -fx-max-height: 200px;
 }
 
-/* Estilo para os campos de texto no painel de veículos */
-#campoPlaca, #campoModelo, #campoAno, #campoCor {
-    -fx-background-color: #ffffff;
-    -fx-border-color: #ccc;
-    -fx-border-radius: 5px;
-    -fx-padding: 8px;
-    -fx-font-size: 14px;
-    -fx-pref-width: 250px;
-}
-
-/* Estilo para os campos de texto no vbox de veículos */
-#vboxVeiculos .text-field {
-    -fx-padding: 8px;
-    -fx-font-size: 14px;
-    -fx-pref-width: 250px;
+.table-column {
+    -fx-alignment: CENTER_LEFT;
 }

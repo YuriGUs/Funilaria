@@ -4,36 +4,43 @@
 <?import javafx.scene.layout.*?>
 
 <GridPane xmlns:fx="http://javafx.com/fxml/1" fx:controller="dev.yuri.controller.EditarClienteController" hgap="10" vgap="10" stylesheets="@/styles/telaEditar.css">
-    <!-- Label e campos de texto para o Cliente -->
+    <!-- Campos do Cliente -->
     <Label text="Nome:" GridPane.rowIndex="0" GridPane.columnIndex="0"/>
     <TextField fx:id="txtNome" GridPane.rowIndex="0" GridPane.columnIndex="1"/>
-
     <Label text="CPF/CNPJ:" GridPane.rowIndex="1" GridPane.columnIndex="0"/>
     <TextField fx:id="txtCpfCnpj" GridPane.rowIndex="1" GridPane.columnIndex="1"/>
-
     <Label text="Endereço:" GridPane.rowIndex="2" GridPane.columnIndex="0"/>
     <TextField fx:id="txtEndereco" GridPane.rowIndex="2" GridPane.columnIndex="1"/>
-
     <Label text="Telefone:" GridPane.rowIndex="3" GridPane.columnIndex="0"/>
     <TextField fx:id="txtTelefone" GridPane.rowIndex="3" GridPane.columnIndex="1"/>
 
+    <!-- Tabela de Veículos -->
     <Label text="Veículos:" GridPane.rowIndex="4" GridPane.columnIndex="0"/>
-    <VBox fx:id="vboxVeiculos" GridPane.rowIndex="4" GridPane.columnIndex="1" spacing="10"/>
+    <TableView fx:id="tableVeiculos" GridPane.rowIndex="4" GridPane.columnIndex="1" editable="true">
+        <columns>
+            <TableColumn fx:id="colPlaca" text="Placa" prefWidth="100"/>
+            <TableColumn fx:id="colModelo" text="Modelo" prefWidth="150"/>
+            <TableColumn fx:id="colAno" text="Ano" prefWidth="80"/>
+            <TableColumn fx:id="colCor" text="Cor" prefWidth="100"/>
+            <TableColumn fx:id="colExcluir" text="Ação" prefWidth="80"/>
+        </columns>
+    </TableView>
+
+    <!-- Botões agrupados em um HBox -->
+    <HBox spacing="10" GridPane.rowIndex="5" GridPane.columnIndex="1" alignment="CENTER_LEFT">
+        <Button fx:id="btnAdicionarVeiculo" text="Adicionar Veículo" onAction="#adicionarVeiculo"/>
+        <Button fx:id="btnSalvar" text="Salvar" onAction="#salvarEdicao"/>
+    </HBox>
 
     <!-- Painel para adicionar um novo veículo -->
-    <AnchorPane fx:id="painelVeiculo" visible="false" GridPane.rowIndex="5" GridPane.columnIndex="1">
-        <VBox spacing="10" alignment="CENTER">
-            <TextField fx:id="campoPlaca" promptText="Placa" />
-            <TextField fx:id="campoModelo" promptText="Modelo" />
-            <TextField fx:id="campoAno" promptText="Ano" />
-            <TextField fx:id="campoCor" promptText="Cor" />
+    <VBox fx:id="painelVeiculo" visible="false" GridPane.rowIndex="6" GridPane.columnIndex="1" spacing="10" alignment="CENTER">
+        <TextField fx:id="campoPlaca" promptText="Placa" />
+        <TextField fx:id="campoModelo" promptText="Modelo" />
+        <TextField fx:id="campoAno" promptText="Ano" />
+        <TextField fx:id="campoCor" promptText="Cor" />
+        <HBox spacing="10" alignment="CENTER">
             <Button fx:id="btnSalvarVeiculo" text="Salvar Veículo" onAction="#salvarVeiculo"/>
-        </VBox>
-    </AnchorPane>
-
-    <!-- Botão para adicionar veículo -->
-    <Button fx:id="btnAdicionarVeiculo" text="Adicionar Veículo" onAction="#adicionarVeiculo" GridPane.rowIndex="6" GridPane.columnIndex="1"/>
-
-    <!-- Botão para salvar as edições do cliente -->
-    <Button fx:id="btnSalvar" text="Salvar" onAction="#salvarEdicao" GridPane.rowIndex="7" GridPane.columnIndex="1" GridPane.columnSpan="2"/>
+            <Button fx:id="btnCancelarVeiculo" text="Cancelar" onAction="#cancelarVeiculo"/>
+        </HBox>
+    </VBox>
 </GridPane>
