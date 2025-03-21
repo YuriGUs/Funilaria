@@ -12,6 +12,7 @@ import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.layout.HBox;
+import javafx.stage.Modality;
 import javafx.stage.Stage;
 
 import java.io.IOException;
@@ -72,7 +73,8 @@ public class ClientesController {
             private final HBox painel = new HBox(5, btnEditar, btnExcluir);
 
             {
-                btnEditar.setOnAction(event -> editarCliente(getTableView().getItems().get(getIndex())));
+                btnEditar.setOnAction(event -> { Stage janelaPrincipal = (Stage) tabelaClientes.getScene().getWindow();
+                    editarCliente(getTableView().getItems().get(getIndex()), janelaPrincipal); });
                 btnExcluir.setOnAction(event -> excluirCliente(getTableView().getItems().get(getIndex())));
             }
 
@@ -113,7 +115,7 @@ public class ClientesController {
         tabelaVeiculos.setItems(veiculosLista);
     }
 
-    private void editarCliente(Cliente cliente) {
+    private void editarCliente(Cliente cliente, Stage janelaPrincipal) {
         System.out.println("Editar cliente: " + cliente.getNome());
 
         // Criar uma janela de confirmação
@@ -125,11 +127,11 @@ public class ClientesController {
         Optional<ButtonType> resultado = alerta.showAndWait();
         if (resultado.isPresent() && resultado.get() == ButtonType.OK) {
             // Chama a função para abrir a tela de edição
-            abrirTelaEdicao(cliente);
+            abrirTelaEdicao(cliente, janelaPrincipal);
         }
     }
 
-    private void abrirTelaEdicao(Cliente cliente) {
+    private void abrirTelaEdicao(Cliente cliente, Stage janelaPrincipal) {
         try {
             // Carregar o arquivo FXML da tela de edição
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/View/editarClienteView.fxml"));
@@ -147,7 +149,12 @@ public class ClientesController {
             // Criar a nova janela
             Stage stage = new Stage();
             stage.setScene(new Scene(root));
-            stage.show();
+            stage.setTitle("Editar cliente");
+
+
+            stage.initOwner(janelaPrincipal); // Definindo que esta janela será sua "dona"
+            stage.initModality(Modality.WINDOW_MODAL); // Tornando a janela modal para bloquar interações com a tela principal
+            stage.showAndWait(); // ShowAndWait para garantir que a janela é fechada antes de prosseguir
         } catch (IOException e) {
             System.out.println("Erro ao abrir a tela de edição: " + e.getMessage());
         }

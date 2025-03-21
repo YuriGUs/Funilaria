@@ -61,15 +61,9 @@ public class App extends Application {
         Scene scene = new Scene(root, 1024, 700);
 
         // Criando uma nova Stage (caso necessário)
-        Stage stage = new Stage();
-        stage.setScene(scene);
-        stage.setTitle("Sistema de Funilaria");
-
-        // Exibe a tela antes de maximizar
-        stage.show();
-
-        // Agora sim, maximiza a tela
-        stage.setMaximized(true);
+        primaryStage.setScene(scene);
+        primaryStage.setTitle("Sistema de Funilaria");
+        primaryStage.setMaximized(true);
     }
 
     private static void carregarTela(StackPane content, String fxmlPath) {
