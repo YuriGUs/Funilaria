@@ -10,11 +10,9 @@ import java.util.List;
 public class ClienteService {
 
     private ClienteDAO clienteDAO;
-    private VeiculoDAO veiculoDAO;
 
     public ClienteService() {
         this.clienteDAO = new ClienteDAO();
-        this.veiculoDAO = new VeiculoDAO();
     }
 
     public List<Cliente> listarClientes() {

@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.geometry.Insets?>
+
+<VBox xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1"
+      fx:controller="dev.yuri.controller.LoginController"
+      spacing="15" alignment="CENTER"
+      stylesheets="@/styles/login.css">
+
+    <padding>
+        <Insets top="40" right="40" bottom="40" left="40"/>
+    </padding>
+
+    <Label text="Login - Sistema de Funilaria" id="title"/>
+
+    <!-- Envolvendo os campos para evitar que estiquem -->
+    <HBox alignment="CENTER">
+        <TextField fx:id="txtUsername" promptText="Nome de usuário" maxWidth="220"/>
+    </HBox>
+
+    <HBox alignment="CENTER">
+        <PasswordField fx:id="txtPassword" promptText="Senha" maxWidth="220"/>
+    </HBox>
+
+    <HBox alignment="CENTER">
+        <Button fx:id="btnLogin" text="Entrar" onAction="#login" maxWidth="220"/>
+    </HBox>
+
+    <Label fx:id="lblErro" text="" id="errorLabel"/>
+</VBox>
