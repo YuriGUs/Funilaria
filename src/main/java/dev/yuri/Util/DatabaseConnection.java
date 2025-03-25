@@ -63,6 +63,17 @@ public class DatabaseConnection {
                 "password TEXT NOT NULL, " +
                 "role TEXT NOT NULL)";
 
+        String sqlOrcamento = "CREATE TABLE IF NOT EXISTS item_orcamento (" +
+                "id INTEGER PRIMARY KEY AUTOINCREMENT, " +
+                "id_orcamento INTEGER NOT NULL, " +
+                "quantidade INTEGER NOT NULL, " +
+                "descricao TEXT NOT NULL, " +
+                "valor_unitario REAL NOT NULL, " +
+                "valor_total REAL NOT NULL, " +
+                "responsavel TEXT NOT NULL, " +
+                "FOREIGN KEY (id_orcamento) REFERENCE orcamento(id) ON DELETE CASCADE)";
+
+
         Connection conn = connect();
         try (Statement stmt = conn.createStatement()) {
             stmt.execute(sqlClientes);
@@ -71,6 +82,9 @@ public class DatabaseConnection {
             System.out.println("Tabela 'veiculos' criada/verificada com sucesso!");
             stmt.execute(sqlUsuarios);
             System.out.println("Tabela 'usuarios' criada/verificada com sucesso!");
+            stmt.execute(sqlOrcamento);
+            System.out.println("Tabela 'orcamento' criada/verificada com sucesso!");
+
 
             // Deletar admin existente e recriar com hash correto
             String sqlDeleteAdmin = "DELETE FROM usuarios WHERE username = 'admin'";

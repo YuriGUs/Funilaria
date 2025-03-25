@@ -50,7 +50,7 @@ public class App extends Application {
         StackPane content = new StackPane();
         btn1.setOnAction(e -> carregarTela(content, "/view/cadastro.fxml"));
         btn2.setOnAction(e -> carregarTela(content, "/view/clientesView.fxml"));
-        btn3.setOnAction(e -> mostrarConteudo(content, "Orçamento"));
+        btn3.setOnAction(e -> carregarTela(content, "/view/orcamentoView.fxml"));
 
         menu.getChildren().addAll(btn1, btn2, btn3);
 
@@ -63,6 +63,8 @@ public class App extends Application {
         // Criando uma nova Stage (caso necessário)
         primaryStage.setScene(scene);
         primaryStage.setTitle("Sistema de Funilaria");
+
+        primaryStage.setMaximized(false);
         primaryStage.setMaximized(true);
     }
 
