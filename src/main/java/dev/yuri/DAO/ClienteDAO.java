@@ -83,7 +83,6 @@ public class ClienteDAO {
             e.printStackTrace();
         }
     }
-
     // Atualizar um veículo
     private synchronized void atualizarVeiculo(Veiculo veiculo, Connection conn) throws SQLException {
         String sql = "UPDATE veiculos SET placa = ?, modelo = ?, ano = ?, cor = ? WHERE id = ?";

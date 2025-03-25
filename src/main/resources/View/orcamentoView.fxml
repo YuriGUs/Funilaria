@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<BorderPane xmlns:fx="http://javafx.com/fxml/1" fx:controller="dev.yuri.controller.OrcamentoController">
+    <VBox spacing="10" padding="20">
+        <HBox spacing="10">
+            <Label text="Cliente:"/>
+            <ComboBox fx:id="comboClientes" onAction="#selecionarCliente"/>
+            <Label text="Veículo:"/>
+            <ComboBox fx:id="comboVeiculos"/>
+        </HBox>
+
+        <TableView fx:id="tableOrcamento">
+            <columns>
+                <TableColumn text="Qtd" fx:id="colunaQuantidade"/>
+                <TableColumn text="Descrição" fx:id="colunaDescricao"/>
+                <TableColumn text="Valor Unitário" fx:id="colunaValorUnitario"/>
+                <TableColumn text="Valor Total" fx:id="colunaValorTotal"/>
+                <TableColumn text="Responsável" fx:id="colunaResponsavel"/>
+            </columns>
+        </TableView>
+
+        <HBox spacing="10">
+            <TextField fx:id="txtQuantidade" promptText="Quantidade"/>
+            <TextField fx:id="txtDescricao" promptText="Descrição"/>
+            <TextField fx:id="txtValorUnitario" promptText="Valor Unitário"/>
+            <TextField fx:id="txtResponsavel" promptText="Responsável"/>
+            <Button text="Adicionar Serviço" onAction="#adicionarServico"/>
+        </HBox>
+
+        <HBox spacing="10" alignment="CENTER">
+            <Button text="Imprimir Orçamento" onAction="#imprimirOrcamento"/>
+        </HBox>
+    </VBox>
+</BorderPane>
