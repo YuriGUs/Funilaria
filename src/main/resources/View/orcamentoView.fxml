@@ -3,35 +3,43 @@
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
 
-<BorderPane xmlns:fx="http://javafx.com/fxml/1" fx:controller="dev.yuri.controller.OrcamentoController">
-    <VBox spacing="10" padding="20">
-        <HBox spacing="10">
-            <Label text="Cliente:"/>
-            <ComboBox fx:id="comboClientes" onAction="#selecionarCliente"/>
-            <Label text="Veículo:"/>
-            <ComboBox fx:id="comboVeiculos"/>
-        </HBox>
+<VBox xmlns:fx="http://javafx.com/fxml/1"
+      fx:controller="dev.yuri.controller.OrcamentoController"
+      stylesheets="@/styles/orcamento.css"
+      spacing="10"
+      alignment="TOP_CENTER">
 
-        <TableView fx:id="tableOrcamento">
-            <columns>
-                <TableColumn text="Qtd" fx:id="colunaQuantidade"/>
-                <TableColumn text="Descrição" fx:id="colunaDescricao"/>
-                <TableColumn text="Valor Unitário" fx:id="colunaValorUnitario"/>
-                <TableColumn text="Valor Total" fx:id="colunaValorTotal"/>
-                <TableColumn text="Responsável" fx:id="colunaResponsavel"/>
-            </columns>
-        </TableView>
+    <!-- Seleção de Cliente e Veículo -->
+    <HBox spacing="10" alignment="CENTER">
+        <Label text="Cliente:"/>
+        <ComboBox fx:id="comboClientes" onAction="#selecionarCliente" prefWidth="200"/>
 
-        <HBox spacing="10">
-            <TextField fx:id="txtQuantidade" promptText="Quantidade"/>
-            <TextField fx:id="txtDescricao" promptText="Descrição"/>
-            <TextField fx:id="txtValorUnitario" promptText="Valor Unitário"/>
-            <TextField fx:id="txtResponsavel" promptText="Responsável"/>
-            <Button text="Adicionar Serviço" onAction="#adicionarServico"/>
-        </HBox>
+        <Label text="Veículo:"/>
+        <ComboBox fx:id="comboVeiculos" prefWidth="200"/>
+    </HBox>
 
-        <HBox spacing="10" alignment="CENTER">
-            <Button text="Imprimir Orçamento" onAction="#imprimirOrcamento"/>
-        </HBox>
-    </VBox>
-</BorderPane>
+    <!-- Tabela de Orçamento -->
+    <TableView fx:id="tableOrcamento" prefWidth="800" prefHeight="250">
+        <columns>
+            <TableColumn text="Qtd" fx:id="colunaQuantidade" prefWidth="80"/>
+            <TableColumn text="Descrição" fx:id="colunaDescricao" prefWidth="250"/>
+            <TableColumn text="Valor Unitário" fx:id="colunaValorUnitario" prefWidth="150"/>
+            <TableColumn text="Valor Total" fx:id="colunaValorTotal" prefWidth="150"/>
+            <TableColumn text="Responsável" fx:id="colunaResponsavel" prefWidth="170"/>
+        </columns>
+    </TableView>
+
+    <!-- Campos para adicionar um serviço -->
+    <HBox spacing="10" alignment="CENTER">
+        <TextField fx:id="txtQuantidade" promptText="Quantidade" prefWidth="80"/>
+        <TextField fx:id="txtDescricao" promptText="Descrição" prefWidth="250"/>
+        <TextField fx:id="txtValorUnitario" promptText="Valor Unitário" prefWidth="150"/>
+        <TextField fx:id="txtResponsavel" promptText="Responsável" prefWidth="170"/>
+    </HBox>
+
+    <!-- Botões -->
+    <HBox spacing="20" alignment="CENTER">
+        <Button text="Adicionar Serviço" onAction="#adicionarServico" prefWidth="200"/>
+        <Button text="Imprimir Orçamento" onAction="#imprimirOrcamento" prefWidth="200"/>
+    </HBox>
+</VBox>

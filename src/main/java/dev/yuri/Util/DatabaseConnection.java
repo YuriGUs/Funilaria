@@ -41,6 +41,8 @@ public class DatabaseConnection {
     // Mét0do para criar tabelas no banco de dados
     public static void criarTabelas() {
         System.out.println("Criando tabelas no banco de dados...");
+
+        // Tabela de clientes
         String sqlClientes = "CREATE TABLE IF NOT EXISTS clientes (" +
                 "id INTEGER PRIMARY KEY AUTOINCREMENT, " +
                 "nome TEXT NOT NULL, " +
@@ -48,6 +50,7 @@ public class DatabaseConnection {
                 "endereco TEXT NOT NULL, " +
                 "telefone TEXT NOT NULL)";
 
+        // Tabela de veículos
         String sqlVeiculos = "CREATE TABLE IF NOT EXISTS veiculos (" +
                 "id INTEGER PRIMARY KEY AUTOINCREMENT, " +
                 "cliente_id INTEGER NOT NULL, " +
@@ -57,13 +60,25 @@ public class DatabaseConnection {
                 "cor TEXT NOT NULL, " +
                 "FOREIGN KEY (cliente_id) REFERENCES clientes(id) ON DELETE CASCADE)";
 
+        // Tabela de usuários
         String sqlUsuarios = "CREATE TABLE IF NOT EXISTS usuarios (" +
                 "id INTEGER PRIMARY KEY AUTOINCREMENT, " +
                 "username TEXT NOT NULL UNIQUE, " +
                 "password TEXT NOT NULL, " +
                 "role TEXT NOT NULL)";
 
-        String sqlOrcamento = "CREATE TABLE IF NOT EXISTS item_orcamento (" +
+        // Tabela de orçamentos (nova) -- Sqlite não aceita DATE, tem que usar TEXT
+        String sqlOrcamentos = "CREATE TABLE IF NOT EXISTS orcamentos (" +
+                "id INTEGER PRIMARY KEY AUTOINCREMENT, " +
+                "id_cliente INTEGER NOT NULL, " +
+                "id_veiculo INTEGER NOT NULL, " +
+                "data TEXT NOT NULL, " +
+                "valor_total REAL NOT NULL, " +
+                "FOREIGN KEY (id_cliente) REFERENCES clientes(id), " +
+                "FOREIGN KEY (id_veiculo) REFERENCES veiculos(id))";
+
+        // Tabela de itens de orçamento
+        String sqlItemOrcamento = "CREATE TABLE IF NOT EXISTS item_orcamento (" +
                 "id INTEGER PRIMARY KEY AUTOINCREMENT, " +
                 "id_orcamento INTEGER NOT NULL, " +
                 "quantidade INTEGER NOT NULL, " +
@@ -71,22 +86,27 @@ public class DatabaseConnection {
                 "valor_unitario REAL NOT NULL, " +
                 "valor_total REAL NOT NULL, " +
                 "responsavel TEXT NOT NULL, " +
-                "FOREIGN KEY (id_orcamento) REFERENCE orcamento(id) ON DELETE CASCADE)";
-
+                "FOREIGN KEY (id_orcamento) REFERENCES orcamentos(id) ON DELETE CASCADE)";
 
         Connection conn = connect();
         try (Statement stmt = conn.createStatement()) {
+            // Criar tabelas
             stmt.execute(sqlClientes);
             System.out.println("Tabela 'clientes' criada/verificada com sucesso!");
+
             stmt.execute(sqlVeiculos);
             System.out.println("Tabela 'veiculos' criada/verificada com sucesso!");
+
             stmt.execute(sqlUsuarios);
             System.out.println("Tabela 'usuarios' criada/verificada com sucesso!");
-            stmt.execute(sqlOrcamento);
-            System.out.println("Tabela 'orcamento' criada/verificada com sucesso!");
 
+            stmt.execute(sqlOrcamentos);
+            System.out.println("Tabela 'orcamentos' criada/verificada com sucesso!");
 
-            // Deletar admin existente e recriar com hash correto
+            stmt.execute(sqlItemOrcamento);
+            System.out.println("Tabela 'item_orcamento' criada/verificada com sucesso!");
+
+            // Criar usuário admin
             String sqlDeleteAdmin = "DELETE FROM usuarios WHERE username = 'admin'";
             stmt.execute(sqlDeleteAdmin);
 

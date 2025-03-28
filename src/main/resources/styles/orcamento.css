@@ -1,0 +1,36 @@
+.root {
+    -fx-background-color: #f4f4f4;
+    -fx-font-family: "Arial";
+    -fx-padding: 20;
+}
+
+.label {
+    -fx-font-size: 14px;
+}
+
+.combo-box, .text-field {
+    -fx-pref-height: 30px;
+    -fx-font-size: 14px;
+}
+
+.table-view {
+    -fx-background-color: white;
+    -fx-border-color: #ccc;
+    -fx-border-radius: 5px;
+}
+
+.table-column {
+    -fx-alignment: CENTER;
+}
+
+.button {
+    -fx-font-size: 14px;
+    -fx-pref-height: 40px;
+    -fx-background-color: #0078D7;
+    -fx-text-fill: white;
+    -fx-border-radius: 5px;
+}
+
+.button:hover {
+    -fx-background-color: #005a9e;
+}
