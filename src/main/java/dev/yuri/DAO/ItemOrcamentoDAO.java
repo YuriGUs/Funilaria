@@ -10,27 +10,51 @@ import java.util.List;
 public class ItemOrcamentoDAO {
 
     public void salvar(ItemOrcamento item, int idOrcamento) {
-        String sql = "INSERT INTO item_orcamento (id_orcamento, quantidade, descricao, valor_unitario, valor_total, responsavel) VALUES (?, ?, ?, ?, ?, ?)";
+        String sql = "INSERT INTO item_orcamento (id_orcamento, quantidade, descricao, " +
+                "valor_unitario, valor_total, responsavel) VALUES (?, ?, ?, ?, ?, ?)";
 
-        try (Connection conn = DatabaseConnection.connect();
-             PreparedStatement stmt = conn.prepareStatement(sql)) {
+        Connection conn = null;
+        try {
+            conn = DatabaseConnection.connect();
+            conn.setAutoCommit(false); // Desativa auto-commit
 
-            stmt.setInt(1, idOrcamento);
-            stmt.setInt(2, item.getQuantidade());
-            stmt.setString(3, item.getDescricao());
-            stmt.setDouble(4, item.getValorUnitario());
-            stmt.setDouble(5, item.getValorTotal());
-            stmt.setString(6, item.getResponsavel());
+            try (PreparedStatement stmt = conn.prepareStatement(sql)) {
+                stmt.setInt(1, idOrcamento);
+                stmt.setInt(2, item.getQuantidade());
+                stmt.setString(3, item.getDescricao());
+                stmt.setDouble(4, item.getValorUnitario());
+                stmt.setDouble(5, item.getValorTotal());
+                stmt.setString(6, item.getResponsavel());
 
-            stmt.executeUpdate();
+                stmt.executeUpdate();
+                conn.commit(); // Confirma a transação
+            }
         } catch (SQLException e) {
+            if (conn != null) {
+                try {
+                    conn.rollback(); // Em caso de erro, faz rollback
+                } catch (SQLException ex) {
+                    ex.printStackTrace();
+                }
+            }
             e.printStackTrace();
+        } finally {
+            if (conn != null) {
+                try {
+                    conn.setAutoCommit(true); // Restaura auto-commit
+                    conn.close();
+                } catch (SQLException e) {
+                    e.printStackTrace();
+                }
+            }
         }
     }
 
     public List<ItemOrcamento> listarPorOrcamento(int idOrcamento) {
         List<ItemOrcamento> itens = new ArrayList<>();
-        String sql = "SELECT quantidade, descricao, valor_unitario, valor_total, responsavel FROM item_orcamento WHERE id_orcamento = ?";
+        String sql = "SELECT id, id_orcamento, quantidade, descricao, " +
+                "valor_unitario, valor_total, responsavel " +
+                "FROM item_orcamento WHERE id_orcamento = ?";
 
         try (Connection conn = DatabaseConnection.connect();
              PreparedStatement stmt = conn.prepareStatement(sql)) {
@@ -40,17 +64,19 @@ public class ItemOrcamentoDAO {
 
             while (rs.next()) {
                 ItemOrcamento item = new ItemOrcamento(
+                        rs.getInt("id_orcamento"),
                         rs.getInt("quantidade"),
                         rs.getString("descricao"),
                         rs.getDouble("valor_unitario"),
                         rs.getString("responsavel")
                 );
+                item.setId(rs.getInt("id"));
+                item.setValorTotal(rs.getDouble("valor_total")); // Garante que o valor total está correto
                 itens.add(item);
             }
         } catch (SQLException e) {
             e.printStackTrace();
         }
-
         return itens;
     }
 
