@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<VBox xmlns:fx="http://javafx.com/fxml/1"
+      fx:controller="dev.yuri.controller.EditarItemController"
+      spacing="10"
+      alignment="CENTER"
+      stylesheets="@/styles/editar_item.css"
+>
+
+    <Label text="Editar Item do Orçamento"/>
+
+    <TextField fx:id="txtQuantidade" promptText="Quantidade"/>
+    <TextField fx:id="txtDescricao" promptText="Descrição"/>
+    <TextField fx:id="txtValorUnitario" promptText="Valor Unitário"/>
+    <TextField fx:id="txtResponsavel" promptText="Responsável"/>
+
+    <Button fx:id="btnSalvar" text="Salvar" onAction="#salvar"/>
+</VBox>

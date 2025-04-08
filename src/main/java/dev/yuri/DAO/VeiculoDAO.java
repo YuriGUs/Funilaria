@@ -1,7 +1,7 @@
 package dev.yuri.DAO;
 
 import dev.yuri.model.Veiculo;
-import dev.yuri.Util.DatabaseConnection;
+import dev.yuri.util.DatabaseConnection;
 
 import java.sql.*;
 import java.util.ArrayList;

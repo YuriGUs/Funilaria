@@ -1,25 +1,40 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import javafx.scene.control.Button?>
-<?import javafx.scene.control.TextField?>
-<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
 
-<?import javafx.scene.control.Label?>
 <VBox xmlns="http://javafx.com/javafx"
       xmlns:fx="http://javafx.com/fxml"
       fx:controller="dev.yuri.controller.CadastroController"
-      spacing="10" stylesheets="@/styles/cadastro_cliente.css">
+      spacing="10"
+      stylesheets="@/styles/cadastro_cliente.css"
+      alignment="TOP_CENTER">
 
-    <Label text="Cadastre seu cliente" />
+    <!-- Área principal -->
+    <HBox spacing="50" alignment="TOP_LEFT">
+        <!-- Área do formulário com título -->
+        <VBox spacing="10" alignment="TOP_LEFT">
+            <Label text="Cadastre seu cliente: " styleClass="titulo"/>
 
-    <TextField fx:id="txtNome" promptText="Nome" />
-    <TextField fx:id="txtCpfCnpj" promptText="CPF ou CNPJ" />
-    <TextField fx:id="txtEndereco" promptText="Endereço" />
-    <TextField fx:id="txtTelefone" promptText="Telefone" />
-    <TextField fx:id="txtPlaca" promptText="Placa do Veículo" />
-    <TextField fx:id="txtModelo" promptText="Modelo do Veículo" />
-    <TextField fx:id="txtAno" promptText="Ano do Veículo" />
-    <TextField fx:id="txtCor" promptText="Cor do Veículo" />
+            <TextField fx:id="txtNome" promptText="Nome" />
+            <TextField fx:id="txtCpfCnpj" promptText="CPF ou CNPJ" />
+            <TextField fx:id="txtEndereco" promptText="Endereço" />
+            <TextField fx:id="txtTelefone" promptText="Telefone" />
+            <TextField fx:id="txtPlaca" promptText="Placa do Veículo" />
+            <TextField fx:id="txtModelo" promptText="Modelo do Veículo" />
+            <TextField fx:id="txtAno" promptText="Ano do Veículo" />
+            <TextField fx:id="txtCor" promptText="Cor do Veículo" />
+            <Button text="Cadastrar Cliente e Veículo" onAction="#cadastrarClienteEVeiculo"/>
+        </VBox>
 
-    <Button text="Cadastrar Cliente e Veículo" onAction="#cadastrarClienteEVeiculo" />
+        <!-- Painel Lateral -->
+        <VBox spacing="10" alignment="TOP_LEFT">
+            <Label text="Últimos Clientes cadastrados" styleClass="subtitulo"/>
+            <ListView fx:id="listUltimosClientes" prefHeight="150" prefWidth="200"/>
+
+            <Label text="Dica" styleClass="subtitulo"/>
+            <Label text="→ O botão de Ajuda contém todas informações sobre o programa."/>
+        </VBox>
+    </HBox>
 </VBox>
+

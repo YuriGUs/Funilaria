@@ -23,19 +23,13 @@ public class ClienteService {
         return clienteDAO.deletar(clienteId);
     }
 
-    public boolean editarCliente(Cliente cliente, List<Veiculo> veiculos) {
-        try {
-            clienteDAO.atualizar(cliente, veiculos);
-            return true;
-        } catch (Exception e) {
-            System.out.println("Erro ao editar cliente: " + e.getMessage());
-            return false;
-        }
-    }
-
     public synchronized void adicionarCliente(Cliente cliente, List<Veiculo> veiculos) {
         // Chama o mét0do do DAO para adicionar o cliente
         clienteDAO.salvar(cliente, veiculos);
+    }
+
+    public List<Cliente> buscarUltimosClientes(int limite) {
+        return clienteDAO.buscarUltimosClientes(limite);
     }
 
 }

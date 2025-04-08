@@ -1,7 +1,6 @@
 package dev.yuri;
 
-import dev.yuri.Util.DatabaseConnection;
-import dev.yuri.controller.OrcamentoController;
+import dev.yuri.util.DatabaseConnection;
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
 import javafx.geometry.Insets;

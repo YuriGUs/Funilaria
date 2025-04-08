@@ -41,10 +41,6 @@ public class OrcamentoService {
     public void deletarItensPorOrcamento(int idOrcamento) {
         itemOrcamentoDAO.deletarPorOrcamento(idOrcamento);
     }
-    // Calcula o valor total de um orçamento
-    public double calcularTotal(List<ItemOrcamento> itens) {
-        return itens.stream().mapToDouble(ItemOrcamento::getValorTotal).sum();
-    }
 
     public int buscarIdOrcamentoPorClienteEVeiculo(int idCliente, int idVeiculo) {
         return orcamentoDAO.buscarIdPorClienteEVeiculo(idCliente, idVeiculo);

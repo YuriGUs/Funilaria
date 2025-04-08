@@ -1,7 +1,7 @@
 .root {
     -fx-background-color: #f4f4f4;
     -fx-font-family: "Arial";
-    -fx-padding: 20;
+    -fx-padding: 50 20 20 20;
 }
 
 .label {

@@ -39,3 +39,30 @@ VBox {
     -fx-spacing: 10px; /* Espaçamento entre os elementos filhos */
     -fx-background-color: white;
 }
+
+.titulo {
+    -fx-font-size: 22px;
+    -fx-font-weight: bold;
+    -fx-text-fill: #333;
+}
+
+
+.subtitulo {
+    -fx-font-size: 14px;
+    -fx-font-weight: bold;
+    -fx-text-fill: #444;
+}
+
+.sidebar {
+    -fx-background-color: #f9f9f9;
+    -fx-padding: 15px;
+    -fx-border-color: #ccc;
+    -fx-border-width: 1px;
+    -fx-border-radius: 5px;
+    -fx-background-radius: 5px;
+    -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.05), 5, 0, 2, 2);
+    -fx-pref-width: 700px;
+}
+
+
+

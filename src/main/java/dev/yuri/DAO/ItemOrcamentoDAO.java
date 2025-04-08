@@ -1,6 +1,6 @@
 package dev.yuri.DAO;
 
-import dev.yuri.Util.DatabaseConnection;
+import dev.yuri.util.DatabaseConnection;
 import dev.yuri.model.ItemOrcamento;
 
 import java.sql.*;
@@ -80,16 +80,35 @@ public class ItemOrcamentoDAO {
         return itens;
     }
 
-    public void deletarPorOrcamento(int idOrcamento) {
-        String sql = "DELETE FROM item_orcamento WHERE id_orcamento = ?";
+    public void deletarPorOrcamento(int idItemOrcamento) {
+        String sql = "DELETE FROM item_orcamento WHERE id = ?";
 
         try (Connection conn = DatabaseConnection.connect();
              PreparedStatement stmt = conn.prepareStatement(sql)) {
 
-            stmt.setInt(1, idOrcamento);
+            stmt.setInt(1, idItemOrcamento);
             stmt.executeUpdate();
         } catch (SQLException e) {
             e.printStackTrace();
         }
     }
+
+    public void atualizar(ItemOrcamento item) {
+        String sql = "UPDATE item_orcamento SET quantidade = ?, descricao = ?, valor_unitario = ?, responsavel = ? WHERE id = ?";
+
+        try (Connection conn = DatabaseConnection.connect();
+             PreparedStatement stmt = conn.prepareStatement(sql)) {
+
+            stmt.setInt(1, item.getQuantidade());
+            stmt.setString(2, item.getDescricao());
+            stmt.setDouble(3, item.getValorUnitario());
+            stmt.setString(4, item.getResponsavel());
+            stmt.setInt(5, item.getId());
+
+            stmt.executeUpdate();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+
 }

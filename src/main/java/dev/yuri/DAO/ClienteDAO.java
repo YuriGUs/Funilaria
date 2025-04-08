@@ -2,13 +2,16 @@ package dev.yuri.DAO;
 
 import dev.yuri.model.Cliente;
 import dev.yuri.model.Veiculo;
-import dev.yuri.Util.DatabaseConnection;
+import dev.yuri.util.DatabaseConnection;
 
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
 
 public class ClienteDAO {
+
+    private VeiculoDAO veiculoDAO = new VeiculoDAO();
+
 
     // Mét0do para salvar cliente e vincular veículos
     public synchronized void salvar(Cliente cliente, List<Veiculo> veiculos) {
@@ -242,4 +245,40 @@ public class ClienteDAO {
             pstmt.executeUpdate();
         }
     } // talvez remover isso e deixar no DAOveiculo
+
+    public List<Cliente> buscarUltimosClientes(int limite) {
+        List<Cliente> clientes = new ArrayList<>();
+
+        String sql = "SELECT id, nome, cpf_cnpj, endereco, telefone " +
+                "FROM clientes ORDER BY id DESC LIMIT ?";
+
+        try (Connection conn = DatabaseConnection.connect();
+             PreparedStatement stmt = conn.prepareStatement(sql)) {
+
+            stmt.setInt(1, limite);
+
+            ResultSet rs = stmt.executeQuery();
+
+            while (rs.next()) {
+                Cliente cliente = new Cliente();
+                cliente.setId(rs.getInt("id"));
+                cliente.setNome(rs.getString("nome"));
+                cliente.setCpfCnpj(rs.getString("cpf_cnpj"));
+                cliente.setEndereco(rs.getString("endereco"));
+                cliente.setTelefone(rs.getString("telefone"));
+
+                List<Veiculo> veiculos = veiculoDAO.listarVeiculosPorCliente(cliente.getId());
+                cliente.setVeiculos(veiculos);
+
+                // Adiciona na lista
+                clientes.add(cliente);
+            }
+
+        } catch (SQLException e) {
+            e.printStackTrace(); // ou log se tiver logger
+        }
+
+        return clientes;
+    }
+
 }

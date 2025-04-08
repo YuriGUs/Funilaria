@@ -1,6 +1,6 @@
 package dev.yuri.DAO;
 
-import dev.yuri.Util.DatabaseConnection;
+import dev.yuri.util.DatabaseConnection;
 import dev.yuri.model.Orcamento;
 
 import java.sql.*;

@@ -4,8 +4,11 @@ import dev.yuri.model.Cliente;
 import dev.yuri.model.Veiculo;
 import dev.yuri.service.ClienteService;
 import dev.yuri.service.VeiculoService;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.scene.control.Alert;
+import javafx.scene.control.ListView;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
 import java.util.ArrayList;
@@ -24,8 +27,26 @@ public class CadastroController {
 
     @FXML private TableView<Cliente> tabelaClientes;
     @FXML private TableView<Veiculo> tabelaVeiculos;
+    @FXML private ListView<String> listUltimosClientes;
+
+    private ObservableList<String> ultimosClientes = FXCollections.observableArrayList();
 
     private ClienteService clienteService;
+
+    public void initialize() {
+        listUltimosClientes.setItems(ultimosClientes);
+
+        List<Cliente> clientesRecentes = clienteService.buscarUltimosClientes(5);
+
+        for (Cliente cliente : clientesRecentes) {
+            List<Veiculo> veiculos = cliente.getVeiculos();
+            if (veiculos != null && !veiculos.isEmpty()) {
+                String linha = cliente.getNome() + " – " + veiculos.get(0).getPlaca();
+                ultimosClientes.add(linha);
+            }
+        }
+
+    }
 
     public CadastroController() {
         this.clienteService = new ClienteService();
@@ -66,6 +87,16 @@ public class CadastroController {
         // Agora sim, salvar Cliente e Veículos juntos
         clienteService.adicionarCliente(cliente, veiculos);
 
+        String nome = txtNome.getText();
+        String placa = txtPlaca.getText();
+
+        if (!nome.isEmpty() && !placa.isEmpty()) {
+            ultimosClientes.add(0, nome + " – " + placa); // adiciona no topo
+            if (ultimosClientes.size() > 5) {
+                ultimosClientes.remove(5); // mantém os 5 mais recentes
+            }
+        }
+
         // Limpar os campos após salvar
         limparCampos();
 
@@ -91,3 +122,5 @@ public class CadastroController {
         alert.showAndWait();
     }
 }
+
+

@@ -12,23 +12,37 @@ public class Cliente {
     private StringProperty telefone;
     private List<Veiculo> veiculos; // Relação 1:N
 
-    // Construtor com ID
-    public Cliente(int id, String nome, String cpfCnpj, String endereco, String telefone) {
-        this.id = new SimpleIntegerProperty(id); // Usando o ID passado
-        this.nome = new SimpleStringProperty(nome);
-        this.cpfCnpj = new SimpleStringProperty(cpfCnpj);
-        this.endereco = new SimpleStringProperty(endereco);
-        this.telefone = new SimpleStringProperty(telefone);
+    private void inicializarPropriedades() {
+        this.id = new SimpleIntegerProperty();
+        this.nome = new SimpleStringProperty();
+        this.cpfCnpj = new SimpleStringProperty();
+        this.endereco = new SimpleStringProperty();
+        this.telefone = new SimpleStringProperty();
     }
 
-    // Construtor sem ID (ID será gerado automaticamente)
-    public Cliente(String nome, String cpfCnpj, String endereco, String telefone) {
-        this.id = new SimpleIntegerProperty(-1);  // Inicializando com -1, pois o banco irá gerar o ID
-        this.nome = new SimpleStringProperty(nome);
-        this.cpfCnpj = new SimpleStringProperty(cpfCnpj);
-        this.endereco = new SimpleStringProperty(endereco);
-        this.telefone = new SimpleStringProperty(telefone);
+    public Cliente() {
+        inicializarPropriedades();
     }
+
+    public Cliente(int id, String nome, String cpfCnpj, String endereco, String telefone) {
+        inicializarPropriedades();
+        this.id.set(id);
+        this.nome.set(nome);
+        this.cpfCnpj.set(cpfCnpj);
+        this.endereco.set(endereco);
+        this.telefone.set(telefone);
+    }
+
+    public Cliente(String nome, String cpfCnpj, String endereco, String telefone) {
+        inicializarPropriedades();
+        this.nome.set(nome);
+        this.cpfCnpj.set(cpfCnpj);
+        this.endereco.set(endereco);
+        this.telefone.set(telefone);
+        this.id.set(-1);
+    }
+
+
 
     // Getters e setters para todos os campos
     public int getId() {

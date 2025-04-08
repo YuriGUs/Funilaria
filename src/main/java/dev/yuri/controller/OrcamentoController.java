@@ -212,7 +212,7 @@ public class OrcamentoController {
     private void carregarClientes() {
         comboClientes.setItems(FXCollections.observableArrayList(clienteService.listarClientes()));
     }
-    // MODIFICADO PARA TESTE
+
     private void carregarItensOrcamento() {
         if (idOrcamentoAtual != -1) {
             System.out.println("DEBUG - Carregando itens para orçamento ID: " + idOrcamentoAtual);

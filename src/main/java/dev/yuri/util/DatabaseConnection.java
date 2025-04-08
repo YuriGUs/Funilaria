@@ -1,4 +1,4 @@
-package dev.yuri.Util;
+package dev.yuri.util;
 
 import dev.yuri.DAO.UsuarioDAO;
 

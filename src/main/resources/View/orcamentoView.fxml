@@ -3,9 +3,11 @@
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
 
+<?import dev.yuri.util.ButtonCellFactory?>
 <VBox xmlns:fx="http://javafx.com/fxml/1"
       fx:controller="dev.yuri.controller.OrcamentoController"
       stylesheets="@/styles/orcamento.css"
+      styleClass="root"
       spacing="10"
       alignment="TOP_CENTER">
 
@@ -19,13 +21,19 @@
     </HBox>
 
     <!-- Tabela de Orçamento -->
-    <TableView fx:id="tableOrcamento" prefWidth="800" prefHeight="250">
+    <TableView fx:id="tableOrcamento" prefWidth="800" prefHeight="600">
         <columns>
             <TableColumn text="Qtd" fx:id="colunaQuantidade" prefWidth="80"/>
             <TableColumn text="Descrição" fx:id="colunaDescricao" prefWidth="250"/>
             <TableColumn text="Valor Unitário" fx:id="colunaValorUnitario" prefWidth="150"/>
             <TableColumn text="Valor Total" fx:id="colunaValorTotal" prefWidth="150"/>
             <TableColumn text="Responsável" fx:id="colunaResponsavel" prefWidth="170"/>
+            <TableColumn fx:id="colunaAcoes" text="Ações" prefWidth="150">
+                <cellFactory>
+                    <ButtonCellFactory/>
+                </cellFactory>
+            </TableColumn>
+
         </columns>
     </TableView>
 
