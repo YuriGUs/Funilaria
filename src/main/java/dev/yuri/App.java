@@ -55,6 +55,7 @@ public class App extends Application {
         BorderPane root = new BorderPane();
         root.setLeft(menu);
         root.setCenter(content);
+        carregarTela(content, "/view/cadastro.fxml");
 
         Scene scene = new Scene(root, 1024, 700);
 

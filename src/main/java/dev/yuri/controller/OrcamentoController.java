@@ -1,5 +1,14 @@
 package dev.yuri.controller;
 
+
+import com.lowagie.text.Document;
+import com.lowagie.text.Element;
+import com.lowagie.text.Paragraph;
+import com.lowagie.text.Phrase;
+import com.lowagie.text.Font;
+import com.lowagie.text.pdf.PdfPTable;
+import com.lowagie.text.pdf.PdfWriter;
+
 import dev.yuri.DAO.OrcamentoDAO;
 import dev.yuri.model.Cliente;
 import dev.yuri.model.Orcamento;
@@ -12,8 +21,14 @@ import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
+import javafx.scene.control.Button;
+import javafx.scene.control.TextField;
 import javafx.scene.control.cell.PropertyValueFactory;
 
+import java.awt.*;
+import java.io.File;
+import java.io.FileOutputStream;
+import java.time.LocalDate;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -92,6 +107,7 @@ public class OrcamentoController {
 
         adicionarItemAoOrcamento();
     }
+
     @FXML
     private void imprimirOrcamento() {
         if (listaServicos.isEmpty()) {
@@ -99,10 +115,103 @@ public class OrcamentoController {
             return;
         }
 
-        // Lógica de impressão aqui
-        System.out.println("Imprimindo orçamento ID: " + idOrcamentoAtual);
-        mostrarAlerta("Sucesso", "Orçamento impresso com sucesso!", Alert.AlertType.INFORMATION);
+        Cliente cliente = comboClientes.getValue();
+        Veiculo veiculo = comboVeiculos.getValue();
+
+        try {
+            File pasta = new File("orcamentos");
+            if (!pasta.exists()) pasta.mkdirs();
+
+            String output = "orcamentos/Orcamento_" + System.currentTimeMillis() + ".pdf";
+            Document doc = new Document();
+            PdfWriter.getInstance(doc, new FileOutputStream(output));
+            doc.open();
+
+
+            Font titulo = new Font(Font.HELVETICA, 16, Font.BOLD);
+            Font normal = new Font(Font.HELVETICA, 10, Font.NORMAL);
+            Font bold = new Font(Font.HELVETICA, 10, Font.BOLD);
+
+            Paragraph dataAtual = new Paragraph("Data: " + LocalDate.now(), normal);
+            dataAtual.setAlignment(Element.ALIGN_RIGHT);
+            doc.add(dataAtual);
+
+            Paragraph aviso = new Paragraph("SEM VALOR FISCAL", bold);
+            aviso.setAlignment(Element.ALIGN_RIGHT);
+            doc.add(aviso);
+
+            Paragraph header = new Paragraph("ORÇAMENTO DE SERVIÇOS - VEÍCULO", titulo);
+            header.setAlignment(Element.ALIGN_CENTER);
+            header.setSpacingAfter(10);
+            doc.add(header);
+
+            PdfPTable infoTable = new PdfPTable(2);
+            infoTable.setWidthPercentage(100);
+            infoTable.setSpacingAfter(10f);
+            infoTable.addCell(new Phrase("Nome: " + cliente.getNome(), normal));
+            infoTable.addCell(new Phrase("Telefone: " + cliente.getTelefone(), normal));
+            infoTable.addCell(new Phrase("CPF/CNPJ: " + cliente.getCpfCnpj(), normal));
+            infoTable.addCell(new Phrase("Endereço: " + cliente.getEndereco(), normal));
+            infoTable.addCell(new Phrase("Placa: " + veiculo.getPlaca(), normal));
+            infoTable.addCell(new Phrase("Modelo: " + veiculo.getModelo(), normal));
+            infoTable.addCell(new Phrase("Ano: " + veiculo.getAno(), normal));
+            infoTable.addCell(new Phrase("Cor: " + veiculo.getCor(), normal));
+            doc.add(infoTable);
+
+            PdfPTable table = new PdfPTable(new float[]{1, 4, 2, 2, 3});
+            table.setWidthPercentage(100);
+            table.setSpacingBefore(10f);
+            table.setSpacingAfter(10f);
+
+            table.addCell(new Phrase("Qtd", bold));
+            table.addCell(new Phrase("Descrição", bold));
+            table.addCell(new Phrase("V. Unit", bold));
+            table.addCell(new Phrase("V. Total", bold));
+            table.addCell(new Phrase("Responsável", bold));
+
+            double totalGeral = 0;
+
+            for (ItemOrcamento item : listaServicos) {
+                table.addCell(new Phrase(String.valueOf(item.getQuantidade()), normal));
+                table.addCell(new Phrase(item.getDescricao(), normal));
+                table.addCell(new Phrase(String.format("R$ %.2f", item.getValorUnitario()), normal));
+                table.addCell(new Phrase(String.format("R$ %.2f", item.getValorTotal()), normal));
+                table.addCell(new Phrase(item.getResponsavel(), normal));
+
+                totalGeral += item.getValorTotal();
+            }
+
+            doc.add(table);
+
+            // Total geral
+            Paragraph total = new Paragraph("TOTAL GERAL: R$ " + String.format("%.2f", totalGeral), bold);
+            total.setAlignment(Element.ALIGN_RIGHT);
+            total.setSpacingBefore(10);
+            doc.add(total);
+
+            // Espaço + Linha de assinatura
+            Paragraph espaco = new Paragraph("\n\n");
+            doc.add(espaco);
+
+            Paragraph linha = new Paragraph("________________________________________", normal);
+            linha.setAlignment(Element.ALIGN_CENTER);
+            doc.add(linha);
+
+            Paragraph rotulo = new Paragraph("Assinatura do Cliente", normal);
+            rotulo.setAlignment(Element.ALIGN_CENTER);
+            doc.add(rotulo);
+
+            doc.close();
+
+            mostrarAlerta("Sucesso", "PDF do orçamento gerado com sucesso!", Alert.AlertType.INFORMATION);
+            Desktop.getDesktop().open(new File(output));
+        } catch (Exception e) {
+            e.printStackTrace();
+            mostrarAlerta("Erro", "Erro ao gerar PDF: " + e.getMessage(), Alert.AlertType.ERROR);
+        }
     }
+
+
     @FXML
     private void adicionarItemAoOrcamento() {
         try {
